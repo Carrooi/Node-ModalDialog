@@ -7,6 +7,8 @@ class Dialog
 
 	@visible: null
 
+	@closing: false
+
 	@overlayRegistered: false
 
 	@classes:
@@ -42,8 +44,6 @@ class Dialog
 
 	duration: 'fast'
 
-	closing: false
-
 	el: null
 
 
@@ -53,7 +53,7 @@ class Dialog
 		if Dialog.overlayRegistered == false
 			Dialog.overlayRegistered = true
 			Overlay.on('hide', =>
-				if Dialog.visible != null && @closing == false
+				if Dialog.visible != null && Dialog.closing == false
 					Dialog.visible.hide()
 			)
 
@@ -97,83 +97,83 @@ class Dialog
 						top: '50%'
 				).appendTo($('body'))
 
-			styles =
-				zIndex: options.zIndex
-				width: options.width
-				marginLeft: -(options.width / 2)
-				marginTop: -(options.maxHeight / 2)
-			if options.styles
-				styles.border = '1px solid black'
-				styles.backgroundColor = 'white'
-				styles.padding = '10px 12px 10px 12px'
-			@el.css(styles)
-
-			if @header || @title
-				header = $('<div>',
-					'class': options.classes.header
-				)
-
+				styles =
+					zIndex: options.zIndex
+					width: options.width
+					marginLeft: -(options.width / 2)
+					marginTop: -(options.maxHeight / 2)
 				if options.styles
-					header.css(
-						borderBottom: '1px solid black'
-						paddingBottom: '8px'
+					styles.border = '1px solid black'
+					styles.backgroundColor = 'white'
+					styles.padding = '10px 12px 10px 12px'
+				@el.css(styles)
+
+				if @header || @title
+					header = $('<div>',
+						'class': options.classes.header
 					)
 
-				if @header
-					header.html(@header)
-				else
-					header.html('<span class="' + options.classes.title + '">' + @title + '</span>')
+					if options.styles
+						header.css(
+							borderBottom: '1px solid black'
+							paddingBottom: '8px'
+						)
 
-				header.appendTo(@el)
+					if @header
+						header.html(@header)
+					else
+						header.html('<span class="' + options.classes.title + '">' + @title + '</span>')
 
-			if @content
-				styles =
-					maxHeight: options.maxHeight
-					overflow: 'hidden'
-					overflowX: 'auto'
-					overflowY: 'auto'
-				if options.styles
-					styles.borderBottom = '1px solid black'
-					styles.paddingTop = '8px'
-					styles.paddingBottom = '8px'
-				$('<div>',
-					'class': options.classes.content,
-					html: @content
-					css: styles
-				).appendTo(@el)
+					header.appendTo(@el)
 
-			if @footer || @info || @buttons.length > 0
-				footer = $('<div>',
-					'class': options.classes.footer,
-				)
+				if @content
+					styles =
+						maxHeight: options.maxHeight
+						overflow: 'hidden'
+						overflowX: 'auto'
+						overflowY: 'auto'
+					if options.styles
+						styles.borderBottom = '1px solid black'
+						styles.paddingTop = '8px'
+						styles.paddingBottom = '8px'
+					$('<div>',
+						'class': options.classes.content,
+						html: @content
+						css: styles
+					).appendTo(@el)
 
-				if options.styles
-					footer.css(paddingTop: '8px')
+				if @footer || @info || @buttons.length > 0
+					footer = $('<div>',
+						'class': options.classes.footer,
+					)
 
-				if @footer
-					footer.html(@footer)
-				else
-					if @info then $('<span class="' + options.classes.info + '">' + @info + '</span>').appendTo(footer)
-					if @buttons.length > 0
-						buttons = $('<div class="' + options.classes.buttons + '">')
+					if options.styles
+						footer.css(paddingTop: '8px')
 
-						if options.styles
-							buttons.css(float: 'right')
+					if @footer
+						footer.html(@footer)
+					else
+						if @info then $('<span class="' + options.classes.info + '">' + @info + '</span>').appendTo(footer)
+						if @buttons.length > 0
+							buttons = $('<div class="' + options.classes.buttons + '">')
 
-						for button in @buttons
-							( (button) =>
-								$('<a>',
-									html: button.title
-									href: '#'
-									'class': options.classes.button
-									click: (e) =>
-										e.preventDefault()
-										button.action.call(@)
-								).appendTo(buttons)
-							)(button)
-						buttons.appendTo(footer)
+							if options.styles
+								buttons.css(float: 'right')
 
-				footer.appendTo(@el)
+							for button in @buttons
+								( (button) =>
+									$('<a>',
+										html: button.title
+										href: '#'
+										'class': options.classes.button
+										click: (e) =>
+											e.preventDefault()
+											button.action.call(@)
+									).appendTo(buttons)
+								)(button)
+							buttons.appendTo(footer)
+
+					footer.appendTo(@el)
 
 			@el.css(
 				display: 'block'
@@ -204,11 +204,11 @@ class Dialog
 		if Dialog.visible == null || Dialog.visible != @
 			deferred.reject(new Error('This window is not open'))
 		else
-			@closing = true
+			Dialog.closing = true
 			Overlay.hide()
 			@el.fadeOut( =>
 				Dialog.visible = null
-				@closing = false
+				Dialog.closing = false
 				deferred.resolve(@)
 			)
 
