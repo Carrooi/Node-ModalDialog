@@ -1,0 +1,30 @@
+{
+	"name": "modal-dialog",
+	"description": "Window modal dialogs for browser",
+	"version": "1.0.0",
+	"author": {
+		"name": "David Kudera",
+		"email": "sakren@gmail.com"
+	},
+	"keywords": [
+		"modal",
+		"dialog",
+		"window",
+		"browser",
+		"client",
+		"widget"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:sakren/node-modal-dialog.git"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": "*"
+	},
+	"main": "./lib/Dialog.js",
+	"dependencies": {
+		"q": "0.9.6",
+		"overlay": "latest"
+	}
+}
