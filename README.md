@@ -99,6 +99,9 @@ var c = new Confirm('Some question', 'Yes', 'No');
 
 ## Changelog
 
+* 1.1.1
+	+ Some bugs
+
 * 1.1.0
 	+ Added confirm dialog
 

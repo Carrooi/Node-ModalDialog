@@ -30,7 +30,7 @@ class Dialog
 
 	info: null
 
-	buttons: []
+	buttons: null
 
 	width: 430
 
@@ -48,6 +48,8 @@ class Dialog
 
 
 	constructor: ->
+		@buttons = []
+
 		if Dialog.overlayRegistered == false
 			Dialog.overlayRegistered = true
 			Overlay.on('hide', =>
