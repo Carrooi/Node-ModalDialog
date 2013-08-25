@@ -75,7 +75,32 @@ d.show({
 * classes (override default classes names)
 * overlay (list of options for [overlay](https://npmjs.org/package/overlay) package)
 
+## Confirmation dialog
+
+There is prepared also simple confirmation dialog with two buttons (`OK` and `Cancel`).
+
+```
+var Confirm = require('modal-dialog/ConfirmDialog');
+
+var c = new Confirm('Are you really want to continue?');
+c.onTrue(function() {
+	alert('You clicked on the OK button');
+});
+c.onFalse(function() {
+	alert('You clicked on the Cancel button');
+});
+```
+
+Here is how to set own captions for these two buttons.
+
+```
+var c = new Confirm('Some question', 'Yes', 'No');
+```
+
 ## Changelog
+
+* 1.1.0
+	+ Added confirm dialog
 
 * 1.0.0
 	+ Initial version

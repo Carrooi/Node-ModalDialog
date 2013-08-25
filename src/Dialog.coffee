@@ -131,7 +131,7 @@ class Dialog
 					overflowX: 'auto'
 					overflowY: 'auto'
 				if options.styles
-					styles.bottomBottom = '1px solid black'
+					styles.borderBottom = '1px solid black'
 					styles.paddingTop = '8px'
 					styles.paddingBottom = '8px'
 				$('<div>',
