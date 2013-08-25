@@ -201,7 +201,7 @@ class Dialog
 	hide: ->
 		deferred = Q.defer()
 
-		if Dialog.visible == null || Dialog.visible != @
+		if !@isOpen()
 			deferred.reject(new Error('This window is not open'))
 		else
 			Dialog.closing = true
@@ -213,6 +213,10 @@ class Dialog
 			)
 
 		return deferred.promise
+
+
+	isOpen: ->
+		return Dialog.visible == @
 
 
 module.exports = Dialog
