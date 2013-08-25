@@ -26,8 +26,8 @@ If you want to set some element directly into header or footer, you can set thes
 are just shortcuts for setting texts.
 
 ```
-d.header = $('<div>my custom header');
-d.footer = $('<div>my custom footer');
+d.header = $('<div>my custom header</div>');
+d.footer = $('<div>my custom footer</div>');
 ```
 
 ## Styling
