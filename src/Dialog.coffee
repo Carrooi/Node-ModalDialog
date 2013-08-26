@@ -21,6 +21,8 @@ class Dialog
 		buttons: 'buttons'
 		button: 'button'
 
+	@styles: true
+
 
 	title: null
 
@@ -39,8 +41,6 @@ class Dialog
 	maxHeight: 400
 
 	zIndex: 100000
-
-	styles: true
 
 	duration: 'fast'
 
@@ -74,7 +74,7 @@ class Dialog
 			if typeof options.maxHeight == 'undefined' then options.maxHeight = @maxHeight
 			if typeof options.duration == 'undefined' then options.duration = @duration
 			if typeof options.zIndex == 'undefined' then options.zIndex = @zIndex
-			if typeof options.styles == 'undefined' then options.styles = @styles
+			if typeof options.styles == 'undefined' then options.styles = Dialog.styles
 			if typeof options.classes == 'undefined' then options.classes = {}
 			if typeof options.overlay == 'undefined' then options.overlay = {}
 			if typeof options.classes.container == 'undefined' then options.classes.container = Dialog.classes.container

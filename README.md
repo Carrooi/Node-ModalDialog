@@ -99,6 +99,9 @@ var c = new Confirm('Some question', 'Yes', 'No');
 
 ## Changelog
 
+* 1.2.1
+	+ Bug with custom styles
+
 * 1.2.0
 	+ Added `isOpen` method
 
