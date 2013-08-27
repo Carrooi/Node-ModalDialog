@@ -179,12 +179,14 @@ class Dialog
 				display: 'block'
 				visibility: 'hidden'
 			)
-			height = parseInt(@el.css('height'))
-			@el.css(
-				display: 'hidden'
-				visibility: 'visible'
-				marginTop: -(height / 2)
+			@imagesLoaded().then( ->
+				height = parseInt(@el.css('height'))
+				@el.css(
+					visibility: 'visible'
+					marginTop: -(height / 2)
+				)
 			)
+
 			Overlay.show(options.overlay)
 			@el.fadeIn(options.duration, (e) =>
 				Dialog.visible = @
@@ -211,6 +213,26 @@ class Dialog
 				Dialog.closing = false
 				deferred.resolve(@)
 			)
+
+		return deferred.promise
+
+
+	imagesLoaded: ->
+		deferred = Q.defer()
+
+		images = @el.find('img')
+		counter = images.length
+
+		loaded = ->
+			counter--
+			if counter == 0 then deferred.resolve(images)
+
+		images.each( (i, image) ->
+			if (image.complete)
+				loaded()
+			else
+				$(image).one('load', loaded)
+		)
 
 		return deferred.promise
 
