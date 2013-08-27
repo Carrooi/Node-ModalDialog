@@ -179,7 +179,7 @@ class Dialog
 				display: 'block'
 				visibility: 'hidden'
 			)
-			@imagesLoaded().then( ->
+			@imagesLoaded().then( =>
 				height = parseInt(@el.css('height'))
 				@el.css(
 					visibility: 'visible'
