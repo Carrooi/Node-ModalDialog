@@ -223,16 +223,19 @@ class Dialog
 		images = @el.find('img')
 		counter = images.length
 
-		loaded = ->
-			counter--
-			if counter == 0 then deferred.resolve(images)
+		if counter == 0
+			deferred.resolve(null)
+		else
+			loaded = ->
+				counter--
+				if counter == 0 then deferred.resolve(images)
 
-		images.each( (i, image) ->
-			if (image.complete)
-				loaded()
-			else
-				$(image).one('load', loaded)
-		)
+			images.each( (i, image) ->
+				if (image.complete)
+					loaded()
+				else
+					$(image).one('load', loaded)
+			)
 
 		return deferred.promise
 

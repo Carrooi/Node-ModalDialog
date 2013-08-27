@@ -99,7 +99,7 @@ var c = new Confirm('Some question', 'Yes', 'No');
 
 ## Changelog
 
-* 1.2.2 - 1.2.3
+* 1.2.2 - 1.2.4
 	+ Showing dialog in right position after all images all loaded
 
 * 1.2.1
