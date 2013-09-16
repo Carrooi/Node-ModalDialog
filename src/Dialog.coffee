@@ -1,5 +1,6 @@
 Q = require 'q'
 Overlay = require 'overlay'
+ready = require 'content-ready'
 EventEmitter = require('events').EventEmitter
 try $ = require 'jquery' catch err then $ = window.jQuery
 
@@ -182,7 +183,7 @@ class Dialog extends EventEmitter
 				display: 'block'
 				visibility: 'hidden'
 			)
-			@imagesLoaded().then( =>
+			ready(@el).then( =>
 				height = parseInt(@el.css('height'))
 				@el.css(
 					visibility: 'visible'
@@ -221,29 +222,6 @@ class Dialog extends EventEmitter
 
 				@emit 'afterHide', @
 				deferred.resolve(@)
-			)
-
-		return deferred.promise
-
-
-	imagesLoaded: ->
-		deferred = Q.defer()
-
-		images = @el.find('img')
-		counter = images.length
-
-		if counter == 0
-			deferred.resolve(null)
-		else
-			loaded = ->
-				counter--
-				if counter == 0 then deferred.resolve(images)
-
-			images.each( (i, image) ->
-				if (image.complete)
-					loaded()
-				else
-					$(image).one('load', loaded)
 			)
 
 		return deferred.promise
