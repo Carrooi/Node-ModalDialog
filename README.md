@@ -1,10 +1,7 @@
 # Modal dialog
 
-Window modal dialogs for browser
-
-## Changelog
-
-Changelog is in the bottom of this readme.
+Window modal dialogs for browser (eg. with [simq](https://npmjs.org/package/simq)).
+Depends on jQuery, instance of EventEmitter, uses [q](https://npmjs.org/package/q) promise library.
 
 ## Usage
 
@@ -97,7 +94,27 @@ Here is how to set own captions for these two buttons.
 var c = new Confirm('Some question', 'Yes', 'No');
 ```
 
+## Events
+
+* `beforeShow` (dialog): Called before dialog is opened
+* `afterShow` (dialog): Called after dialog is opened (after all animations)
+* `beforeHide` (dialog): Called before dialog is closed
+* `afterHide` (dialog): Called after dialog is closed (after all animations)
+
+Example:
+```
+d.on('afterShow', function(dialog) {
+	d === dialog; //true
+
+	console.log('Window is open');
+});
+```
+
 ## Changelog
+
+* 1.3.0
+	+ Instance of EventEmitter
+	+ Added some events
 
 * 1.2.2 - 1.2.4
 	+ Showing dialog in right position after all images all loaded

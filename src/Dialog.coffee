@@ -1,8 +1,9 @@
 Q = require 'q'
 Overlay = require 'overlay'
+EventEmitter = require('events').EventEmitter
 try $ = require 'jquery' catch err then $ = window.jQuery
 
-class Dialog
+class Dialog extends EventEmitter
 
 
 	@visible: null
@@ -70,6 +71,8 @@ class Dialog
 		deferred = Q.defer()
 
 		if Dialog.visible == null
+			@emit 'beforeShow', @
+
 			if typeof options.width == 'undefined' then options.width = @width
 			if typeof options.maxHeight == 'undefined' then options.maxHeight = @maxHeight
 			if typeof options.duration == 'undefined' then options.duration = @duration
@@ -190,6 +193,8 @@ class Dialog
 			Overlay.show(options.overlay)
 			@el.fadeIn(options.duration, (e) =>
 				Dialog.visible = @
+
+				@emit 'afterShow', @
 				deferred.resolve(@)
 			)
 		else if Dialog.visible == @
@@ -206,11 +211,15 @@ class Dialog
 		if !@isOpen()
 			deferred.reject(new Error('This window is not open'))
 		else
+			@emit 'beforeHide'
+
 			Dialog.closing = true
 			Overlay.hide()
 			@el.fadeOut( =>
 				Dialog.visible = null
 				Dialog.closing = false
+
+				@emit 'afterHide', @
 				deferred.resolve(@)
 			)
 
