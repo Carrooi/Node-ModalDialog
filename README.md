@@ -112,6 +112,9 @@ d.on('afterShow', function(dialog) {
 
 ## Changelog
 
+* 1.3.1
+	+ Added tests
+
 * 1.3.0
 	+ Instance of EventEmitter
 	+ Added some events

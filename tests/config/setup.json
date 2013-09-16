@@ -1,0 +1,21 @@
+{
+	"packages": {
+		"modal": {
+			"base": "../",
+			"application": "./tests/modules.js",
+			"modules": [
+				"./src/*.coffee",
+				"./node_modules/overlay/src/Overlay.coffee",
+				"./node_modules/q/q.js"
+			],
+			"coreModules": ["events"],
+			"aliases": {
+				"Dialog": "src/Dialog",
+				"ConfirmDialog": "src/ConfirmDialog"
+			}
+		}
+	},
+	"debugger": {
+		"scripts": true
+	}
+}
