@@ -33,6 +33,6 @@
 		"chai": "latest"
 	},
 	"scripts": {
-		"test": "cd ./tests; mocha-phantomjs index.html;"
+		"test": "cd ./test; mocha-phantomjs index.html;"
 	}
 }

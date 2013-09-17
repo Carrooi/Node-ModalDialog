@@ -5,7 +5,8 @@
 			"application": "./tests/modules.js",
 			"modules": [
 				"./src/*.coffee",
-				"./node_modules/overlay/src/Overlay.coffee",
+				"./node_modules/overlay/lib/Overlay.js",
+				"./node_modules/content-ready/lib/Ready.js",
 				"./node_modules/q/q.js"
 			],
 			"coreModules": ["events"],
