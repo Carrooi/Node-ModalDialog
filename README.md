@@ -86,10 +86,10 @@ There is prepared also simple confirmation dialog with two buttons (`OK` and `Ca
 var Confirm = require('modal-dialog/ConfirmDialog');
 
 var c = new Confirm(window.jQuery, 'Are you really want to continue?');
-c.onTrue(function() {
+c.on('true', function() {
 	alert('You clicked on the OK button');
 });
-c.onFalse(function() {
+c.on('false', function() {
 	alert('You clicked on the Cancel button');
 });
 ```
@@ -97,7 +97,7 @@ c.onFalse(function() {
 Here is how to set own captions for these two buttons.
 
 ```
-var c = new Confirm('Some question', 'Yes', 'No');
+var c = new Confirm(window.jQuery, 'Some question', 'Yes', 'No');
 ```
 
 ## Events
@@ -106,6 +106,8 @@ var c = new Confirm('Some question', 'Yes', 'No');
 * `afterShow` (dialog): Called after dialog is opened (after all animations)
 * `beforeHide` (dialog): Called before dialog is closed
 * `afterHide` (dialog): Called after dialog is closed (after all animations)
+* `true` (only confirmations): Called when true button is clicked
+* `false` (only confirmations): Called when false button is clicked
 
 Example:
 ```
@@ -123,6 +125,9 @@ $ npm test
 ```
 
 ## Changelog
+
+* 1.5.0
+	+ onTrue and onFalse in confirmations replaced with eventEmitter events
 
 * 1.4.0
 	+ jQuery must be passed in constructor

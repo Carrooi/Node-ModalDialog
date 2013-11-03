@@ -31,17 +31,17 @@ describe 'ConfirmDialog', ->
 		it 'should create base two buttons', ->
 			expect(dialog.buttons.length).to.be.equal(2)
 
-	describe '#onTrue()', ->
+	describe '#on true', ->
 		it 'should call this method when ok button is clicked', (done) ->
-			dialog.onTrue( -> done() )
+			dialog.on 'true', -> done()
 			dialog.show().then( ->
 				button = $(dialog.el).find('div.buttons a:nth-child(1)')
 				button.click()
 			).done()
 
-	describe '#onFalse()', ->
+	describe '#on false', ->
 		it 'should call this method when cancel button is clicked', (done) ->
-			dialog.onFalse( -> done() )
+			dialog.on 'false', -> done()
 			dialog.show().then( ->
 				button = $(dialog.el).find('div.buttons a:nth-child(2)')
 				button.click()

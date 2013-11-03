@@ -2291,45 +2291,18 @@
 	    ConfirmDialog.prototype.falseText = null;
 	
 	    function ConfirmDialog(jquery, content, trueText, falseText) {
+	      var _this = this;
 	      this.content = content;
 	      this.trueText = trueText != null ? trueText : ConfirmDialog.trueText;
 	      this.falseText = falseText != null ? falseText : ConfirmDialog.falseText;
 	      ConfirmDialog.__super__.constructor.call(this, jquery);
-	      this.addButton(this.trueText, null);
-	      this.addButton(this.falseText, null);
+	      this.addButton(this.trueText, function() {
+	        return _this.emit('true', _this);
+	      });
+	      this.addButton(this.falseText, function() {
+	        return _this.emit('false', _this);
+	      });
 	    }
-	
-	    ConfirmDialog.prototype.onTrue = function(fn) {
-	      var button, _i, _len, _ref, _results;
-	      _ref = this.buttons;
-	      _results = [];
-	      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-	        button = _ref[_i];
-	        if (button.title === this.trueText) {
-	          button.action = fn;
-	          break;
-	        } else {
-	          _results.push(void 0);
-	        }
-	      }
-	      return _results;
-	    };
-	
-	    ConfirmDialog.prototype.onFalse = function(fn) {
-	      var button, _i, _len, _ref, _results;
-	      _ref = this.buttons;
-	      _results = [];
-	      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-	        button = _ref[_i];
-	        if (button.title === this.falseText) {
-	          button.action = fn;
-	          break;
-	        } else {
-	          _results.push(void 0);
-	        }
-	      }
-	      return _results;
-	    };
 	
 	    return ConfirmDialog;
 	
@@ -3071,9 +3044,9 @@
 	        return expect(dialog.buttons.length).to.be.equal(2);
 	      });
 	    });
-	    describe('#onTrue()', function() {
+	    describe('#on true', function() {
 	      return it('should call this method when ok button is clicked', function(done) {
-	        dialog.onTrue(function() {
+	        dialog.on('true', function() {
 	          return done();
 	        });
 	        return dialog.show().then(function() {
@@ -3083,9 +3056,9 @@
 	        }).done();
 	      });
 	    });
-	    return describe('#onFalse()', function() {
+	    return describe('#on false', function() {
 	      return it('should call this method when cancel button is clicked', function(done) {
-	        dialog.onFalse(function() {
+	        dialog.on('false', function() {
 	          return done();
 	        });
 	        return dialog.show().then(function() {

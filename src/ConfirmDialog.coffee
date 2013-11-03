@@ -15,22 +15,8 @@ class ConfirmDialog extends Dialog
 	constructor: (jquery, @content, @trueText = ConfirmDialog.trueText, @falseText = ConfirmDialog.falseText) ->
 		super(jquery)
 
-		@addButton(@trueText, null)
-		@addButton(@falseText, null)
-
-
-	onTrue: (fn) ->
-		for button in @buttons
-			if button.title == @trueText
-				button.action = fn
-				break
-
-
-	onFalse: (fn) ->
-		for button in @buttons
-			if button.title == @falseText
-				button.action = fn
-				break
+		@addButton(@trueText, => @emit 'true', @)
+		@addButton(@falseText, => @emit 'false', @)
 
 
 module.exports = ConfirmDialog
