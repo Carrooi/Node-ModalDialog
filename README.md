@@ -3,6 +3,12 @@
 Window modal dialogs for browser (eg. with [simq](https://npmjs.org/package/simq)).
 Depends on jQuery, instance of EventEmitter, uses [q](https://npmjs.org/package/q) promise library.
 
+## Installation
+
+```
+$ npm install modal-dialog
+```
+
 ## Usage
 
 ```
@@ -110,9 +116,15 @@ d.on('afterShow', function(dialog) {
 });
 ```
 
+## Tests
+
+```
+$ npm test
+```
+
 ## Changelog
 
-* 1.3.3
+* 1.3.3 - 1.3.4
 	+ Some optimizations
 	+ Updated tests
 
