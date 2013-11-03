@@ -69,9 +69,8 @@ class Dialog extends EventEmitter
 
 
 	show: (options = {}) ->
-		deferred = Q.defer()
-
 		if Dialog.visible == null
+
 			@emit 'beforeShow', @
 
 			if typeof options.width == 'undefined' then options.width = @width
@@ -192,25 +191,27 @@ class Dialog extends EventEmitter
 			)
 
 			Overlay.show(options.overlay)
+
+			deferred = Q.defer()
 			@el.fadeIn(options.duration, (e) =>
 				Dialog.visible = @
 
 				@emit 'afterShow', @
 				deferred.resolve(@)
 			)
-		else if Dialog.visible == @
-			deferred.reject(new Error('This modal dialog is already open'))
-		else
-			deferred.reject(new Error('Another modal dialog is open'))
 
-		return deferred.promise
+			return deferred.promise
+		else if Dialog.visible == @
+			return Q.reject(new Error('This modal dialog is already open.'))
+		else
+			return Q.reject(new Error('Another modal dialog is open.'))
 
 
 	hide: ->
 		deferred = Q.defer()
 
 		if !@isOpen()
-			deferred.reject(new Error('This window is not open'))
+			deferred.reject(new Error('This window is not open.'))
 		else
 			@emit 'beforeHide'
 

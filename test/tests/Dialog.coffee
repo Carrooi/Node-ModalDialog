@@ -13,18 +13,18 @@ describe 'Dialog', ->
 		dialog = new Dialog
 	)
 
-	afterEach( ->
-		if Overlay.el
-			Overlay.el.remove()
-			Overlay.el = null
-
+	afterEach( (done) ->
 		if dialog.el
 			dialog.el.remove()
 			dialog.el = null
 
-		Overlay.visible = false
 		Dialog.visible = null
 		Dialog.closing = false
+
+		if Overlay.visible
+			Overlay.hide().then( -> done())
+		else
+			done()
 	)
 
 	describe '#show()', ->
@@ -40,15 +40,17 @@ describe 'Dialog', ->
 			dialog.show().then( ->
 				dialog.show().fail( (err) ->
 					expect(err).to.be.instanceof(Error)
+					expect(err.message).to.be.equal('This modal dialog is already open.')
 					done()
-				).done()
-			).done()
+				)
+			)
 
 		it 'should return an error if another dialog is open', (done) ->
 			d = new Dialog
 			d.show().then( ->
 				dialog.show().fail( (err) ->
 					expect(err).to.be.instanceof(Error)
+					expect(err.message).to.be.equal('Another modal dialog is open.')
 					d.hide().then( ->
 						done()
 					).done()
@@ -168,5 +170,6 @@ describe 'Dialog', ->
 		it 'should return an error if dialog is not open', (done) ->
 			dialog.hide().fail( (err) ->
 				expect(err).to.be.instanceof(Error)
+				expect(err.message).to.be.equal('This window is not open.')
 				done()
 			).done()

@@ -2443,7 +2443,6 @@
 	      if (options == null) {
 	        options = {};
 	      }
-	      deferred = Q.defer();
 	      if (Dialog.visible === null) {
 	        this.emit('beforeShow', this);
 	        if (typeof options.width === 'undefined') {
@@ -2606,17 +2605,18 @@
 	          });
 	        });
 	        Overlay.show(options.overlay);
+	        deferred = Q.defer();
 	        this.el.fadeIn(options.duration, function(e) {
 	          Dialog.visible = _this;
 	          _this.emit('afterShow', _this);
 	          return deferred.resolve(_this);
 	        });
+	        return deferred.promise;
 	      } else if (Dialog.visible === this) {
-	        deferred.reject(new Error('This modal dialog is already open'));
+	        return Q.reject(new Error('This modal dialog is already open.'));
 	      } else {
-	        deferred.reject(new Error('Another modal dialog is open'));
+	        return Q.reject(new Error('Another modal dialog is open.'));
 	      }
-	      return deferred.promise;
 	    };
 	
 	    Dialog.prototype.hide = function() {
@@ -2624,7 +2624,7 @@
 	        _this = this;
 	      deferred = Q.defer();
 	      if (!this.isOpen()) {
-	        deferred.reject(new Error('This window is not open'));
+	        deferred.reject(new Error('This window is not open.'));
 	      } else {
 	        this.emit('beforeHide');
 	        Dialog.closing = true;
@@ -3032,8 +3032,6 @@
 	
 	  Q = require('q');
 	
-	  Q.stopUnhandledRejectionTracking();
-	
 	  dialog = null;
 	
 	  describe('ConfirmDialog', function() {
@@ -3108,26 +3106,26 @@
 	
 	  Q = require('q');
 	
-	  Q.stopUnhandledRejectionTracking();
-	
 	  dialog = null;
 	
 	  describe('Dialog', function() {
 	    beforeEach(function() {
 	      return dialog = new Dialog;
 	    });
-	    afterEach(function() {
-	      if (Overlay.el) {
-	        Overlay.el.remove();
-	        Overlay.el = null;
-	      }
+	    afterEach(function(done) {
 	      if (dialog.el) {
 	        dialog.el.remove();
 	        dialog.el = null;
 	      }
-	      Overlay.visible = false;
 	      Dialog.visible = null;
-	      return Dialog.closing = false;
+	      Dialog.closing = false;
+	      if (Overlay.visible) {
+	        return Overlay.hide().then(function() {
+	          return done();
+	        });
+	      } else {
+	        return done();
+	      }
 	    });
 	    describe('#show()', function() {
 	      it('should show and create dialog element', function(done) {
@@ -3142,9 +3140,10 @@
 	        return dialog.show().then(function() {
 	          return dialog.show().fail(function(err) {
 	            expect(err).to.be["instanceof"](Error);
+	            expect(err.message).to.be.equal('This modal dialog is already open.');
 	            return done();
-	          }).done();
-	        }).done();
+	          });
+	        });
 	      });
 	      it('should return an error if another dialog is open', function(done) {
 	        var d;
@@ -3152,6 +3151,7 @@
 	        return d.show().then(function() {
 	          return dialog.show().fail(function(err) {
 	            expect(err).to.be["instanceof"](Error);
+	            expect(err.message).to.be.equal('Another modal dialog is open.');
 	            return d.hide().then(function() {
 	              return done();
 	            }).done();
@@ -3286,6 +3286,7 @@
 	      return it('should return an error if dialog is not open', function(done) {
 	        return dialog.hide().fail(function(err) {
 	          expect(err).to.be["instanceof"](Error);
+	          expect(err.message).to.be.equal('This window is not open.');
 	          return done();
 	        }).done();
 	      });
@@ -3311,7 +3312,7 @@
 	return {
 		"name": "modal-dialog",
 		"description": "Window modal dialogs for browser",
-		"version": "1.3.2",
+		"version": "1.3.3",
 		"author": {
 			"name": "David Kudera",
 			"email": "sakren@gmail.com"

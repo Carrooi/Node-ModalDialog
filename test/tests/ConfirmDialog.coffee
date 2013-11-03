@@ -3,8 +3,6 @@ Confirm = require 'ConfirmDialog'
 Overlay = require 'overlay'
 Q = require 'q'
 
-Q.stopUnhandledRejectionTracking()
-
 dialog = null
 
 
