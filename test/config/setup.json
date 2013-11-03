@@ -2,21 +2,23 @@
 	"packages": {
 		"modal": {
 			"base": "../",
-			"application": "./tests/modules.js",
+			"application": "./test/application.js",
 			"modules": [
 				"./src/*.coffee",
-				"./node_modules/overlay/lib/Overlay.js",
-				"./node_modules/content-ready/lib/Ready.js",
-				"./node_modules/q/q.js"
+				"overlay/lib/Overlay.js",
+				"content-ready/lib/Ready.js",
+				"q/q.js",
+				"events",
+				"./test/tests/*.coffee"
 			],
-			"coreModules": ["events"],
 			"aliases": {
-				"Dialog": "src/Dialog",
-				"ConfirmDialog": "src/ConfirmDialog"
-			}
+				"Dialog": "/src/Dialog",
+				"ConfirmDialog": "/src/ConfirmDialog"
+			},
+			"run": [
+				"/test/tests/Dialog",
+				"/test/tests/ConfirmDialog"
+			]
 		}
-	},
-	"debugger": {
-		"scripts": true
 	}
 }

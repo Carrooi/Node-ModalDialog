@@ -112,6 +112,10 @@ d.on('afterShow', function(dialog) {
 
 ## Changelog
 
+* 1.3.3
+	+ Some optimizations
+	+ Updated tests
+
 * 1.3.2
 	+ Uses [content-ready](https://npmjs.org/package/content-ready) module
 	+ Added many other tests

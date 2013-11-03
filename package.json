@@ -24,15 +24,15 @@
 	},
 	"main": "./lib/Dialog.js",
 	"dependencies": {
-		"q": "latest",
-		"overlay": "latest",
-		"content-ready": "latest"
+		"q": "~0.9.7",
+		"overlay": "~1.2.4",
+		"content-ready": "~1.0.0"
 	},
 	"devDependencies": {
-		"mocha": "latest",
-		"chai": "latest"
+		"mocha": "~1.14.0",
+		"chai": "~1.8.1"
 	},
 	"scripts": {
-		"test": "cd ./test; mocha-phantomjs index.html;"
+		"test": "cd ./test; simq build; mocha-phantomjs index.html;"
 	}
 }
