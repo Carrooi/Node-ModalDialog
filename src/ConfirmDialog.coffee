@@ -12,8 +12,8 @@ class ConfirmDialog extends Dialog
 	falseText: null
 
 
-	constructor: (@content, @trueText = ConfirmDialog.trueText, @falseText = ConfirmDialog.falseText) ->
-		super
+	constructor: (jquery, @content, @trueText = ConfirmDialog.trueText, @falseText = ConfirmDialog.falseText) ->
+		super(jquery)
 
 		@addButton(@trueText, null)
 		@addButton(@falseText, null)

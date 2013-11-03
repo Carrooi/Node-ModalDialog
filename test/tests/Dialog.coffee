@@ -4,13 +4,14 @@ Q = require 'q'
 
 Q.stopUnhandledRejectionTracking()
 
+$ = window.jQuery
 dialog = null
 
 
 describe 'Dialog', ->
 
 	beforeEach( ->
-		dialog = new Dialog
+		dialog = new Dialog($)
 	)
 
 	afterEach( (done) ->

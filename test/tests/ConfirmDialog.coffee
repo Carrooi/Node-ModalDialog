@@ -3,27 +3,28 @@ Confirm = require 'ConfirmDialog'
 Overlay = require 'overlay'
 Q = require 'q'
 
+$ = window.jQuery
 dialog = null
 
 
 describe 'ConfirmDialog', ->
 
 	beforeEach( ->
-		dialog = new Confirm
+		dialog = new Confirm($)
 	)
 
-	afterEach( ->
-		if Overlay.el
-			Overlay.el.remove()
-			Overlay.el = null
-
+	afterEach( (done) ->
 		if dialog.el
 			dialog.el.remove()
 			dialog.el = null
 
-		Overlay.visible = false
 		Dialog.visible = null
 		Dialog.closing = false
+
+		if Overlay.visible
+			Overlay.hide().then( -> done())
+		else
+			done()
 	)
 
 	describe '#constructor()', ->

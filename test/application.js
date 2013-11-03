@@ -2290,11 +2290,11 @@
 	
 	    ConfirmDialog.prototype.falseText = null;
 	
-	    function ConfirmDialog(content, trueText, falseText) {
+	    function ConfirmDialog(jquery, content, trueText, falseText) {
 	      this.content = content;
 	      this.trueText = trueText != null ? trueText : ConfirmDialog.trueText;
 	      this.falseText = falseText != null ? falseText : ConfirmDialog.falseText;
-	      ConfirmDialog.__super__.constructor.apply(this, arguments);
+	      ConfirmDialog.__super__.constructor.call(this, jquery);
 	      this.addButton(this.trueText, null);
 	      this.addButton(this.falseText, null);
 	    }
@@ -2353,7 +2353,7 @@
 
 	/** code **/
 	(function() {
-	  var $, Dialog, EventEmitter, Overlay, Q, err, ready,
+	  var $, Dialog, EventEmitter, Overlay, Q, ready,
 	    __hasProp = {}.hasOwnProperty,
 	    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 	
@@ -2365,12 +2365,7 @@
 	
 	  EventEmitter = require('events').EventEmitter;
 	
-	  try {
-	    $ = require('jquery');
-	  } catch (_error) {
-	    err = _error;
-	    $ = window.jQuery;
-	  }
+	  $ = null;
 	
 	  Dialog = (function(_super) {
 	    __extends(Dialog, _super);
@@ -2416,8 +2411,24 @@
 	
 	    Dialog.prototype.el = null;
 	
-	    function Dialog() {
-	      var _this = this;
+	    function Dialog(jquery) {
+	      var err,
+	        _this = this;
+	      if (jquery == null) {
+	        jquery = null;
+	      }
+	      if (jquery === null) {
+	        try {
+	          jquery = require('jquery');
+	        } catch (_error) {
+	          err = _error;
+	          jquery = window.jQuery;
+	        }
+	      }
+	      if (!jquery) {
+	        throw new Error('jquery is not defined.');
+	      }
+	      $ = jquery;
 	      this.buttons = [];
 	      if (Dialog.overlayRegistered === false) {
 	        Dialog.overlayRegistered = true;
@@ -3022,7 +3033,7 @@
 
 	/** code **/
 	(function() {
-	  var Confirm, Dialog, Overlay, Q, dialog;
+	  var $, Confirm, Dialog, Overlay, Q, dialog;
 	
 	  Dialog = require('Dialog');
 	
@@ -3032,24 +3043,28 @@
 	
 	  Q = require('q');
 	
+	  $ = window.jQuery;
+	
 	  dialog = null;
 	
 	  describe('ConfirmDialog', function() {
 	    beforeEach(function() {
-	      return dialog = new Confirm;
+	      return dialog = new Confirm($);
 	    });
-	    afterEach(function() {
-	      if (Overlay.el) {
-	        Overlay.el.remove();
-	        Overlay.el = null;
-	      }
+	    afterEach(function(done) {
 	      if (dialog.el) {
 	        dialog.el.remove();
 	        dialog.el = null;
 	      }
-	      Overlay.visible = false;
 	      Dialog.visible = null;
-	      return Dialog.closing = false;
+	      Dialog.closing = false;
+	      if (Overlay.visible) {
+	        return Overlay.hide().then(function() {
+	          return done();
+	        });
+	      } else {
+	        return done();
+	      }
 	    });
 	    describe('#constructor()', function() {
 	      return it('should create base two buttons', function() {
@@ -3098,7 +3113,7 @@
 
 	/** code **/
 	(function() {
-	  var Dialog, Overlay, Q, dialog;
+	  var $, Dialog, Overlay, Q, dialog;
 	
 	  Dialog = require('Dialog');
 	
@@ -3106,11 +3121,15 @@
 	
 	  Q = require('q');
 	
+	  Q.stopUnhandledRejectionTracking();
+	
+	  $ = window.jQuery;
+	
 	  dialog = null;
 	
 	  describe('Dialog', function() {
 	    beforeEach(function() {
-	      return dialog = new Dialog;
+	      return dialog = new Dialog($);
 	    });
 	    afterEach(function(done) {
 	      if (dialog.el) {
@@ -3312,7 +3331,7 @@
 	return {
 		"name": "modal-dialog",
 		"description": "Window modal dialogs for browser",
-		"version": "1.3.3",
+		"version": "1.4.0",
 		"author": {
 			"name": "David Kudera",
 			"email": "sakren@gmail.com"

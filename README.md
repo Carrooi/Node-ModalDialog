@@ -14,7 +14,7 @@ $ npm install modal-dialog
 ```
 var Dialog = require('modal-dialog');
 
-var d = new Dialog;
+var d = new Dialog(window.jQuery);
 d.title = 'Title of my window';
 d.content = 'Lorem lipsum dolor sit amet...';
 d.info = 'Info in footer';
@@ -85,7 +85,7 @@ There is prepared also simple confirmation dialog with two buttons (`OK` and `Ca
 ```
 var Confirm = require('modal-dialog/ConfirmDialog');
 
-var c = new Confirm('Are you really want to continue?');
+var c = new Confirm(window.jQuery, 'Are you really want to continue?');
 c.onTrue(function() {
 	alert('You clicked on the OK button');
 });
@@ -123,6 +123,9 @@ $ npm test
 ```
 
 ## Changelog
+
+* 1.4.0
+	+ jQuery must be passed in constructor
 
 * 1.3.3 - 1.3.4
 	+ Some optimizations

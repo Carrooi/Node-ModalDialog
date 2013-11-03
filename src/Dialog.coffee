@@ -2,7 +2,8 @@ Q = require 'q'
 Overlay = require 'overlay'
 ready = require 'content-ready'
 EventEmitter = require('events').EventEmitter
-try $ = require 'jquery' catch err then $ = window.jQuery
+
+$ = null
 
 class Dialog extends EventEmitter
 
@@ -49,7 +50,15 @@ class Dialog extends EventEmitter
 	el: null
 
 
-	constructor: ->
+	constructor: (jquery = null) ->
+		if jquery == null
+			try jquery = require 'jquery' catch err then jquery = window.jQuery		# deprecated
+
+		if !jquery
+			throw new Error 'jquery is not defined.'
+
+		$ = jquery
+
 		@buttons = []
 
 		if Dialog.overlayRegistered == false
