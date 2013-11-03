@@ -79,7 +79,6 @@ class Dialog extends EventEmitter
 
 	show: (options = {}) ->
 		if Dialog.visible == null
-
 			@emit 'beforeShow', @
 
 			if typeof options.width == 'undefined' then options.width = @width
@@ -199,14 +198,23 @@ class Dialog extends EventEmitter
 				)
 			)
 
-			Overlay.show(options.overlay)
-
-			deferred = Q.defer()
-			@el.fadeIn(options.duration, (e) =>
-				Dialog.visible = @
-
+			finish = (deferred) =>
 				@emit 'afterShow', @
 				deferred.resolve(@)
+
+			deferred = Q.defer()
+			done =
+				overlay: false
+				dialog: false
+
+			Overlay.show(options.overlay).then( =>
+				done.overlay = true
+				if done.dialog then finish(deferred)
+			)
+			@el.fadeIn(options.duration, (e) =>
+				Dialog.visible = @
+				done.dialog = true
+				if done.overlay then finish(deferred)
 			)
 
 			return deferred.promise

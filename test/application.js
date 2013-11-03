@@ -2422,7 +2422,7 @@
 	    };
 	
 	    Dialog.prototype.show = function(options) {
-	      var button, buttons, deferred, footer, header, styles, _fn, _i, _len, _ref,
+	      var button, buttons, deferred, done, finish, footer, header, styles, _fn, _i, _len, _ref,
 	        _this = this;
 	      if (options == null) {
 	        options = {};
@@ -2588,12 +2588,27 @@
 	            marginTop: -(height / 2)
 	          });
 	        });
-	        Overlay.show(options.overlay);
-	        deferred = Q.defer();
-	        this.el.fadeIn(options.duration, function(e) {
-	          Dialog.visible = _this;
+	        finish = function(deferred) {
 	          _this.emit('afterShow', _this);
 	          return deferred.resolve(_this);
+	        };
+	        deferred = Q.defer();
+	        done = {
+	          overlay: false,
+	          dialog: false
+	        };
+	        Overlay.show(options.overlay).then(function() {
+	          done.overlay = true;
+	          if (done.dialog) {
+	            return finish(deferred);
+	          }
+	        });
+	        this.el.fadeIn(options.duration, function(e) {
+	          Dialog.visible = _this;
+	          done.dialog = true;
+	          if (done.overlay) {
+	            return finish(deferred);
+	          }
 	        });
 	        return deferred.promise;
 	      } else if (Dialog.visible === this) {
@@ -3094,8 +3109,6 @@
 	
 	  Q = require('q');
 	
-	  Q.stopUnhandledRejectionTracking();
-	
 	  $ = window.jQuery;
 	
 	  dialog = null;
@@ -3304,7 +3317,7 @@
 	return {
 		"name": "modal-dialog",
 		"description": "Window modal dialogs for browser",
-		"version": "1.4.0",
+		"version": "1.5.0",
 		"author": {
 			"name": "David Kudera",
 			"email": "sakren@gmail.com"

@@ -128,6 +128,7 @@ $ npm test
 
 * 1.5.0
 	+ onTrue and onFalse in confirmations replaced with eventEmitter events
+	+ overlay did not hide in some situations
 
 * 1.4.0
 	+ jQuery must be passed in constructor
