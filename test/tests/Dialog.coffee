@@ -60,7 +60,10 @@ describe 'Dialog', ->
 
 		it 'element of new dialog should be empty', (done) ->
 			dialog.show().then( ->
-				expect(dialog.el.html()).to.be.equal('')
+				expect(dialog.el.find('div').length).to.be.equal(3)
+				expect(dialog.el.find('div.header').html()).to.be.equal('')
+				expect(dialog.el.find('div.content').html()).to.be.equal('')
+				expect(dialog.el.find('div.footer').html()).to.be.equal('')
 				done()
 			).done()
 

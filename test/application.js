@@ -2415,6 +2415,8 @@
 	
 	    Dialog.styles = true;
 	
+	    Dialog.prototype.options = null;
+	
 	    Dialog.prototype.title = null;
 	
 	    Dialog.prototype.header = null;
@@ -2437,6 +2439,8 @@
 	
 	    Dialog.prototype.el = null;
 	
+	    Dialog.prototype.elements = null;
+	
 	    function Dialog(jquery) {
 	      var err,
 	        _this = this;
@@ -2456,6 +2460,7 @@
 	      }
 	      $ = jquery;
 	      this.buttons = [];
+	      this.elements = {};
 	      if (Dialog.overlayRegistered === false) {
 	        Dialog.overlayRegistered = true;
 	        Overlay.on('hide', function() {
@@ -2527,83 +2532,76 @@
 	      return options;
 	    };
 	
-	    Dialog.prototype.createDialogElement = function(options) {
-	      var button, buttons, footer, header, styles, _fn, _i, _len, _ref,
-	        _this = this;
-	      this.el = $('<div>', {
-	        'class': options.classes.container,
-	        css: {
-	          display: 'none',
-	          position: 'fixed',
-	          left: '50%',
-	          top: '50%'
-	        }
-	      }).appendTo($('body'));
-	      styles = {
-	        zIndex: options.zIndex,
-	        width: options.width,
-	        marginLeft: -(options.width / 2),
-	        marginTop: -(options.maxHeight / 2)
-	      };
-	      if (options.styles) {
-	        styles.border = '1px solid black';
-	        styles.backgroundColor = 'white';
-	        styles.padding = '10px 12px 10px 12px';
-	      }
-	      this.el.css(styles);
-	      if (this.header || this.title) {
-	        header = $('<div>', {
-	          'class': options.classes.header
+	    Dialog.prototype.renderHeader = function() {
+	      if (typeof this.elements.header === 'undefined') {
+	        this.elements.header = $('<div>', {
+	          'class': this.options.classes.header
 	        });
-	        if (options.styles) {
-	          header.css({
+	      }
+	      if (this.header || this.title) {
+	        if (this.options.styles) {
+	          this.elements.header.css({
 	            borderBottom: '1px solid black',
 	            paddingBottom: '8px'
 	          });
 	        }
 	        if (this.header) {
-	          header.html(this.header);
+	          this.elements.header.html(this.header);
 	        } else {
-	          header.html('<span class="' + options.classes.title + '">' + this.title + '</span>');
+	          this.elements.header.html('<span class="' + this.options.classes.title + '">' + this.title + '</span>');
 	        }
-	        header.appendTo(this.el);
 	      }
-	      if (this.content) {
+	      return this.elements.header;
+	    };
+	
+	    Dialog.prototype.renderContent = function() {
+	      var styles;
+	      if (typeof this.elements.content === 'undefined') {
+	        this.elements.content = $('<div>', {
+	          'class': this.options.classes.content
+	        });
+	      }
+	      if (this.content !== null) {
 	        styles = {
-	          maxHeight: options.maxHeight,
+	          maxHeight: this.options.maxHeight,
 	          overflow: 'hidden',
 	          overflowX: 'auto',
 	          overflowY: 'auto'
 	        };
-	        if (options.styles) {
+	        if (this.options.styles) {
 	          styles.borderBottom = '1px solid black';
 	          styles.paddingTop = '8px';
 	          styles.paddingBottom = '8px';
 	        }
-	        $('<div>', {
-	          'class': options.classes.content,
-	          html: this.content,
-	          css: styles
-	        }).appendTo(this.el);
+	        this.elements.content.css(styles);
+	        this.elements.content.html(this.content);
+	      }
+	      return this.elements.content;
+	    };
+	
+	    Dialog.prototype.renderFooter = function() {
+	      var button, buttons, _fn, _i, _len, _ref,
+	        _this = this;
+	      if (typeof this.elements.footer === 'undefined') {
+	        this.elements.footer = $('<div>', {
+	          'class': this.options.classes.footer
+	        });
 	      }
 	      if (this.footer || this.info || this.buttons.length > 0) {
-	        footer = $('<div>', {
-	          'class': options.classes.footer
-	        });
-	        if (options.styles) {
-	          footer.css({
+	        if (this.options.styles) {
+	          this.elements.footer.css({
 	            paddingTop: '8px'
 	          });
 	        }
 	        if (this.footer) {
-	          footer.html(this.footer);
+	          this.elements.footer.html(this.footer);
 	        } else {
 	          if (this.info) {
-	            $('<span class="' + options.classes.info + '">' + this.info + '</span>').appendTo(footer);
+	            $('<span class="' + this.options.classes.info + '">' + this.info + '</span>').appendTo(this.elements.footer);
 	          }
 	          if (this.buttons.length > 0) {
-	            buttons = $('<div class="' + options.classes.buttons + '">');
-	            if (options.styles) {
+	            buttons = $('<div class="' + this.options.classes.buttons + '">');
+	            if (this.options.styles) {
 	              buttons.css({
 	                float: 'right'
 	              });
@@ -2613,7 +2611,7 @@
 	              return $('<a>', {
 	                html: button.title,
 	                href: '#',
-	                'class': options.classes.button,
+	                'class': _this.options.classes.button,
 	                click: function(e) {
 	                  e.preventDefault();
 	                  return button.action.call(_this);
@@ -2624,11 +2622,39 @@
 	              button = _ref[_i];
 	              _fn(button);
 	            }
-	            buttons.appendTo(footer);
+	            buttons.appendTo(this.elements.footer);
 	          }
 	        }
-	        return footer.appendTo(this.el);
 	      }
+	      return this.elements.footer;
+	    };
+	
+	    Dialog.prototype.createDialogElement = function() {
+	      var styles;
+	      this.el = $('<div>', {
+	        'class': this.options.classes.container,
+	        css: {
+	          display: 'none',
+	          position: 'fixed',
+	          left: '50%',
+	          top: '50%'
+	        }
+	      }).appendTo($('body'));
+	      styles = {
+	        zIndex: this.options.zIndex,
+	        width: this.options.width,
+	        marginLeft: -(this.options.width / 2),
+	        marginTop: -(this.options.maxHeight / 2)
+	      };
+	      if (this.options.styles) {
+	        styles.border = '1px solid black';
+	        styles.backgroundColor = 'white';
+	        styles.padding = '10px 12px 10px 12px';
+	      }
+	      this.el.css(styles);
+	      this.el.append(this.renderHeader());
+	      this.el.append(this.renderContent());
+	      return this.el.append(this.renderFooter());
 	    };
 	
 	    Dialog.prototype.moveToCenter = function() {
@@ -2659,9 +2685,9 @@
 	      }
 	      if (Dialog.visible === null) {
 	        this.emit('beforeShow', this);
-	        options = this.parseOptions(options);
+	        this.options = this.parseOptions(options);
 	        if (this.el === null) {
-	          this.createDialogElement(options);
+	          this.createDialogElement(this.options);
 	        }
 	        deferred = Q.defer();
 	        this.moveToCenter().then(function() {
@@ -2674,13 +2700,13 @@
 	            overlay: false,
 	            dialog: false
 	          };
-	          Overlay.show(options.overlay).then(function() {
+	          Overlay.show(_this.options.overlay).then(function() {
 	            done.overlay = true;
 	            if (done.dialog) {
 	              return finish(deferred);
 	            }
 	          });
-	          return _this.el.fadeIn(options.duration, function(e) {
+	          return _this.el.fadeIn(_this.options.duration, function(e) {
 	            Dialog.visible = _this;
 	            done.dialog = true;
 	            if (done.overlay) {
@@ -3192,7 +3218,10 @@
 	      });
 	      it('element of new dialog should be empty', function(done) {
 	        return dialog.show().then(function() {
-	          expect(dialog.el.html()).to.be.equal('');
+	          expect(dialog.el.find('div').length).to.be.equal(3);
+	          expect(dialog.el.find('div.header').html()).to.be.equal('');
+	          expect(dialog.el.find('div.content').html()).to.be.equal('');
+	          expect(dialog.el.find('div.footer').html()).to.be.equal('');
 	          return done();
 	        }).done();
 	      });
@@ -3432,6 +3461,8 @@
 	
 	    Dialog.styles = true;
 	
+	    Dialog.prototype.options = null;
+	
 	    Dialog.prototype.title = null;
 	
 	    Dialog.prototype.header = null;
@@ -3454,6 +3485,8 @@
 	
 	    Dialog.prototype.el = null;
 	
+	    Dialog.prototype.elements = null;
+	
 	    function Dialog(jquery) {
 	      var err,
 	        _this = this;
@@ -3473,6 +3506,7 @@
 	      }
 	      $ = jquery;
 	      this.buttons = [];
+	      this.elements = {};
 	      if (Dialog.overlayRegistered === false) {
 	        Dialog.overlayRegistered = true;
 	        Overlay.on('hide', function() {
@@ -3544,83 +3578,76 @@
 	      return options;
 	    };
 	
-	    Dialog.prototype.createDialogElement = function(options) {
-	      var button, buttons, footer, header, styles, _fn, _i, _len, _ref,
-	        _this = this;
-	      this.el = $('<div>', {
-	        'class': options.classes.container,
-	        css: {
-	          display: 'none',
-	          position: 'fixed',
-	          left: '50%',
-	          top: '50%'
-	        }
-	      }).appendTo($('body'));
-	      styles = {
-	        zIndex: options.zIndex,
-	        width: options.width,
-	        marginLeft: -(options.width / 2),
-	        marginTop: -(options.maxHeight / 2)
-	      };
-	      if (options.styles) {
-	        styles.border = '1px solid black';
-	        styles.backgroundColor = 'white';
-	        styles.padding = '10px 12px 10px 12px';
-	      }
-	      this.el.css(styles);
-	      if (this.header || this.title) {
-	        header = $('<div>', {
-	          'class': options.classes.header
+	    Dialog.prototype.renderHeader = function() {
+	      if (typeof this.elements.header === 'undefined') {
+	        this.elements.header = $('<div>', {
+	          'class': this.options.classes.header
 	        });
-	        if (options.styles) {
-	          header.css({
+	      }
+	      if (this.header || this.title) {
+	        if (this.options.styles) {
+	          this.elements.header.css({
 	            borderBottom: '1px solid black',
 	            paddingBottom: '8px'
 	          });
 	        }
 	        if (this.header) {
-	          header.html(this.header);
+	          this.elements.header.html(this.header);
 	        } else {
-	          header.html('<span class="' + options.classes.title + '">' + this.title + '</span>');
+	          this.elements.header.html('<span class="' + this.options.classes.title + '">' + this.title + '</span>');
 	        }
-	        header.appendTo(this.el);
 	      }
-	      if (this.content) {
+	      return this.elements.header;
+	    };
+	
+	    Dialog.prototype.renderContent = function() {
+	      var styles;
+	      if (typeof this.elements.content === 'undefined') {
+	        this.elements.content = $('<div>', {
+	          'class': this.options.classes.content
+	        });
+	      }
+	      if (this.content !== null) {
 	        styles = {
-	          maxHeight: options.maxHeight,
+	          maxHeight: this.options.maxHeight,
 	          overflow: 'hidden',
 	          overflowX: 'auto',
 	          overflowY: 'auto'
 	        };
-	        if (options.styles) {
+	        if (this.options.styles) {
 	          styles.borderBottom = '1px solid black';
 	          styles.paddingTop = '8px';
 	          styles.paddingBottom = '8px';
 	        }
-	        $('<div>', {
-	          'class': options.classes.content,
-	          html: this.content,
-	          css: styles
-	        }).appendTo(this.el);
+	        this.elements.content.css(styles);
+	        this.elements.content.html(this.content);
+	      }
+	      return this.elements.content;
+	    };
+	
+	    Dialog.prototype.renderFooter = function() {
+	      var button, buttons, _fn, _i, _len, _ref,
+	        _this = this;
+	      if (typeof this.elements.footer === 'undefined') {
+	        this.elements.footer = $('<div>', {
+	          'class': this.options.classes.footer
+	        });
 	      }
 	      if (this.footer || this.info || this.buttons.length > 0) {
-	        footer = $('<div>', {
-	          'class': options.classes.footer
-	        });
-	        if (options.styles) {
-	          footer.css({
+	        if (this.options.styles) {
+	          this.elements.footer.css({
 	            paddingTop: '8px'
 	          });
 	        }
 	        if (this.footer) {
-	          footer.html(this.footer);
+	          this.elements.footer.html(this.footer);
 	        } else {
 	          if (this.info) {
-	            $('<span class="' + options.classes.info + '">' + this.info + '</span>').appendTo(footer);
+	            $('<span class="' + this.options.classes.info + '">' + this.info + '</span>').appendTo(this.elements.footer);
 	          }
 	          if (this.buttons.length > 0) {
-	            buttons = $('<div class="' + options.classes.buttons + '">');
-	            if (options.styles) {
+	            buttons = $('<div class="' + this.options.classes.buttons + '">');
+	            if (this.options.styles) {
 	              buttons.css({
 	                float: 'right'
 	              });
@@ -3630,7 +3657,7 @@
 	              return $('<a>', {
 	                html: button.title,
 	                href: '#',
-	                'class': options.classes.button,
+	                'class': _this.options.classes.button,
 	                click: function(e) {
 	                  e.preventDefault();
 	                  return button.action.call(_this);
@@ -3641,11 +3668,39 @@
 	              button = _ref[_i];
 	              _fn(button);
 	            }
-	            buttons.appendTo(footer);
+	            buttons.appendTo(this.elements.footer);
 	          }
 	        }
-	        return footer.appendTo(this.el);
 	      }
+	      return this.elements.footer;
+	    };
+	
+	    Dialog.prototype.createDialogElement = function() {
+	      var styles;
+	      this.el = $('<div>', {
+	        'class': this.options.classes.container,
+	        css: {
+	          display: 'none',
+	          position: 'fixed',
+	          left: '50%',
+	          top: '50%'
+	        }
+	      }).appendTo($('body'));
+	      styles = {
+	        zIndex: this.options.zIndex,
+	        width: this.options.width,
+	        marginLeft: -(this.options.width / 2),
+	        marginTop: -(this.options.maxHeight / 2)
+	      };
+	      if (this.options.styles) {
+	        styles.border = '1px solid black';
+	        styles.backgroundColor = 'white';
+	        styles.padding = '10px 12px 10px 12px';
+	      }
+	      this.el.css(styles);
+	      this.el.append(this.renderHeader());
+	      this.el.append(this.renderContent());
+	      return this.el.append(this.renderFooter());
 	    };
 	
 	    Dialog.prototype.moveToCenter = function() {
@@ -3676,9 +3731,9 @@
 	      }
 	      if (Dialog.visible === null) {
 	        this.emit('beforeShow', this);
-	        options = this.parseOptions(options);
+	        this.options = this.parseOptions(options);
 	        if (this.el === null) {
-	          this.createDialogElement(options);
+	          this.createDialogElement(this.options);
 	        }
 	        deferred = Q.defer();
 	        this.moveToCenter().then(function() {
@@ -3691,13 +3746,13 @@
 	            overlay: false,
 	            dialog: false
 	          };
-	          Overlay.show(options.overlay).then(function() {
+	          Overlay.show(_this.options.overlay).then(function() {
 	            done.overlay = true;
 	            if (done.dialog) {
 	              return finish(deferred);
 	            }
 	          });
-	          return _this.el.fadeIn(options.duration, function(e) {
+	          return _this.el.fadeIn(_this.options.duration, function(e) {
 	            Dialog.visible = _this;
 	            done.dialog = true;
 	            if (done.overlay) {
