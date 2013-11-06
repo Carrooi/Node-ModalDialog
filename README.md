@@ -126,6 +126,9 @@ $ npm test
 
 ## Changelog
 
+* 1.6.0
+	+ Optimizations
+
 * 1.5.0
 	+ onTrue and onFalse in confirmations replaced with eventEmitter events
 	+ overlay did not hide in some situations
