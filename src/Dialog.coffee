@@ -111,12 +111,6 @@ class Dialog extends EventEmitter
 			)
 
 		if @header || @title
-			if @options.styles
-				@elements.header.css(
-					borderBottom: '1px solid black'
-					paddingBottom: '8px'
-				)
-
 			if @header
 				@elements.header.html(@header)
 			else
@@ -132,17 +126,6 @@ class Dialog extends EventEmitter
 			)
 
 		if @content != null
-			styles =
-				maxHeight: @options.maxHeight
-				overflow: 'hidden'
-				overflowX: 'auto'
-				overflowY: 'auto'
-			if @options.styles
-				styles.borderBottom = '1px solid black'
-				styles.paddingTop = '8px'
-				styles.paddingBottom = '8px'
-
-			@elements.content.css(styles)
 			@elements.content.html(@content)
 
 		return @elements.content
@@ -155,18 +138,14 @@ class Dialog extends EventEmitter
 			)
 
 		if @footer || @info || @buttons.length > 0
-			if @options.styles
-				@elements.footer.css(paddingTop: '8px')
-
 			if @footer
 				@elements.footer.html(@footer)
 			else
-				if @info then $('<span class="' + @options.classes.info + '">' + @info + '</span>').appendTo(@elements.footer)
-				if @buttons.length > 0
-					buttons = $('<div class="' + @options.classes.buttons + '">')
+				if @info
+					@elements.info = $('<span class="' + @options.classes.info + '">' + @info + '</span>').appendTo(@elements.footer)
 
-					if @options.styles
-						buttons.css(float: 'right')
+				if @buttons.length > 0
+					@elements.buttons = $('<div class="' + @options.classes.buttons + '">')
 
 					for button in @buttons
 						( (button) =>
@@ -177,11 +156,41 @@ class Dialog extends EventEmitter
 								click: (e) =>
 									e.preventDefault()
 									button.action.call(@)
-							).appendTo(buttons)
+							).appendTo(@elements.buttons)
 						)(button)
-					buttons.appendTo(@elements.footer)
+					@elements.buttons.appendTo(@elements.footer)
 
 		return @elements.footer
+
+
+	refreshStyles: ->
+		if @elements.header.html() == ''
+			@elements.header.removeAttr('styles')
+		else if @options.styles
+			@elements.header.css(
+				borderBottom: '1px solid black'
+				paddingBottom: '8px'
+			)
+
+		styles =
+			maxHeight: @options.maxHeight
+			overflow: 'hidden'
+			overflowX: 'auto'
+			overflowY: 'auto'
+		if @elements.content.html() == ''
+			@elements.content.removeAttr('styles')
+		else if @options.styles
+			styles.borderBottom = '1px solid black'
+			styles.paddingTop = '8px'
+			styles.paddingBottom = '8px'
+		@elements.content.css(styles)
+
+		if @elements.footer.html() == ''
+			@elements.footer.removeAttr('styles')
+		else if @options.styles
+			@elements.footer.css(paddingTop: '8px')
+			if !@footer && @buttons.length > 0
+				@elements.buttons.css(float: 'right')
 
 
 	createDialogElement: ->
@@ -208,6 +217,8 @@ class Dialog extends EventEmitter
 		@el.append(@renderHeader())
 		@el.append(@renderContent())
 		@el.append(@renderFooter())
+
+		@refreshStyles()
 
 
 	moveToCenter: ->

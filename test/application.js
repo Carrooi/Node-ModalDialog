@@ -2539,12 +2539,6 @@
 	        });
 	      }
 	      if (this.header || this.title) {
-	        if (this.options.styles) {
-	          this.elements.header.css({
-	            borderBottom: '1px solid black',
-	            paddingBottom: '8px'
-	          });
-	        }
 	        if (this.header) {
 	          this.elements.header.html(this.header);
 	        } else {
@@ -2555,32 +2549,19 @@
 	    };
 	
 	    Dialog.prototype.renderContent = function() {
-	      var styles;
 	      if (typeof this.elements.content === 'undefined') {
 	        this.elements.content = $('<div>', {
 	          'class': this.options.classes.content
 	        });
 	      }
 	      if (this.content !== null) {
-	        styles = {
-	          maxHeight: this.options.maxHeight,
-	          overflow: 'hidden',
-	          overflowX: 'auto',
-	          overflowY: 'auto'
-	        };
-	        if (this.options.styles) {
-	          styles.borderBottom = '1px solid black';
-	          styles.paddingTop = '8px';
-	          styles.paddingBottom = '8px';
-	        }
-	        this.elements.content.css(styles);
 	        this.elements.content.html(this.content);
 	      }
 	      return this.elements.content;
 	    };
 	
 	    Dialog.prototype.renderFooter = function() {
-	      var button, buttons, _fn, _i, _len, _ref,
+	      var button, _fn, _i, _len, _ref,
 	        _this = this;
 	      if (typeof this.elements.footer === 'undefined') {
 	        this.elements.footer = $('<div>', {
@@ -2588,24 +2569,14 @@
 	        });
 	      }
 	      if (this.footer || this.info || this.buttons.length > 0) {
-	        if (this.options.styles) {
-	          this.elements.footer.css({
-	            paddingTop: '8px'
-	          });
-	        }
 	        if (this.footer) {
 	          this.elements.footer.html(this.footer);
 	        } else {
 	          if (this.info) {
-	            $('<span class="' + this.options.classes.info + '">' + this.info + '</span>').appendTo(this.elements.footer);
+	            this.elements.info = $('<span class="' + this.options.classes.info + '">' + this.info + '</span>').appendTo(this.elements.footer);
 	          }
 	          if (this.buttons.length > 0) {
-	            buttons = $('<div class="' + this.options.classes.buttons + '">');
-	            if (this.options.styles) {
-	              buttons.css({
-	                float: 'right'
-	              });
-	            }
+	            this.elements.buttons = $('<div class="' + this.options.classes.buttons + '">');
 	            _ref = this.buttons;
 	            _fn = function(button) {
 	              return $('<a>', {
@@ -2616,17 +2587,55 @@
 	                  e.preventDefault();
 	                  return button.action.call(_this);
 	                }
-	              }).appendTo(buttons);
+	              }).appendTo(_this.elements.buttons);
 	            };
 	            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
 	              button = _ref[_i];
 	              _fn(button);
 	            }
-	            buttons.appendTo(this.elements.footer);
+	            this.elements.buttons.appendTo(this.elements.footer);
 	          }
 	        }
 	      }
 	      return this.elements.footer;
+	    };
+	
+	    Dialog.prototype.refreshStyles = function() {
+	      var styles;
+	      if (this.elements.header.html() === '') {
+	        this.elements.header.removeAttr('styles');
+	      } else if (this.options.styles) {
+	        this.elements.header.css({
+	          borderBottom: '1px solid black',
+	          paddingBottom: '8px'
+	        });
+	      }
+	      styles = {
+	        maxHeight: this.options.maxHeight,
+	        overflow: 'hidden',
+	        overflowX: 'auto',
+	        overflowY: 'auto'
+	      };
+	      if (this.elements.content.html() === '') {
+	        this.elements.content.removeAttr('styles');
+	      } else if (this.options.styles) {
+	        styles.borderBottom = '1px solid black';
+	        styles.paddingTop = '8px';
+	        styles.paddingBottom = '8px';
+	      }
+	      this.elements.content.css(styles);
+	      if (this.elements.footer.html() === '') {
+	        return this.elements.footer.removeAttr('styles');
+	      } else if (this.options.styles) {
+	        this.elements.footer.css({
+	          paddingTop: '8px'
+	        });
+	        if (!this.footer && this.buttons.length > 0) {
+	          return this.elements.buttons.css({
+	            float: 'right'
+	          });
+	        }
+	      }
 	    };
 	
 	    Dialog.prototype.createDialogElement = function() {
@@ -2654,7 +2663,8 @@
 	      this.el.css(styles);
 	      this.el.append(this.renderHeader());
 	      this.el.append(this.renderContent());
-	      return this.el.append(this.renderFooter());
+	      this.el.append(this.renderFooter());
+	      return this.refreshStyles();
 	    };
 	
 	    Dialog.prototype.moveToCenter = function() {
@@ -3585,12 +3595,6 @@
 	        });
 	      }
 	      if (this.header || this.title) {
-	        if (this.options.styles) {
-	          this.elements.header.css({
-	            borderBottom: '1px solid black',
-	            paddingBottom: '8px'
-	          });
-	        }
 	        if (this.header) {
 	          this.elements.header.html(this.header);
 	        } else {
@@ -3601,32 +3605,19 @@
 	    };
 	
 	    Dialog.prototype.renderContent = function() {
-	      var styles;
 	      if (typeof this.elements.content === 'undefined') {
 	        this.elements.content = $('<div>', {
 	          'class': this.options.classes.content
 	        });
 	      }
 	      if (this.content !== null) {
-	        styles = {
-	          maxHeight: this.options.maxHeight,
-	          overflow: 'hidden',
-	          overflowX: 'auto',
-	          overflowY: 'auto'
-	        };
-	        if (this.options.styles) {
-	          styles.borderBottom = '1px solid black';
-	          styles.paddingTop = '8px';
-	          styles.paddingBottom = '8px';
-	        }
-	        this.elements.content.css(styles);
 	        this.elements.content.html(this.content);
 	      }
 	      return this.elements.content;
 	    };
 	
 	    Dialog.prototype.renderFooter = function() {
-	      var button, buttons, _fn, _i, _len, _ref,
+	      var button, _fn, _i, _len, _ref,
 	        _this = this;
 	      if (typeof this.elements.footer === 'undefined') {
 	        this.elements.footer = $('<div>', {
@@ -3634,24 +3625,14 @@
 	        });
 	      }
 	      if (this.footer || this.info || this.buttons.length > 0) {
-	        if (this.options.styles) {
-	          this.elements.footer.css({
-	            paddingTop: '8px'
-	          });
-	        }
 	        if (this.footer) {
 	          this.elements.footer.html(this.footer);
 	        } else {
 	          if (this.info) {
-	            $('<span class="' + this.options.classes.info + '">' + this.info + '</span>').appendTo(this.elements.footer);
+	            this.elements.info = $('<span class="' + this.options.classes.info + '">' + this.info + '</span>').appendTo(this.elements.footer);
 	          }
 	          if (this.buttons.length > 0) {
-	            buttons = $('<div class="' + this.options.classes.buttons + '">');
-	            if (this.options.styles) {
-	              buttons.css({
-	                float: 'right'
-	              });
-	            }
+	            this.elements.buttons = $('<div class="' + this.options.classes.buttons + '">');
 	            _ref = this.buttons;
 	            _fn = function(button) {
 	              return $('<a>', {
@@ -3662,17 +3643,55 @@
 	                  e.preventDefault();
 	                  return button.action.call(_this);
 	                }
-	              }).appendTo(buttons);
+	              }).appendTo(_this.elements.buttons);
 	            };
 	            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
 	              button = _ref[_i];
 	              _fn(button);
 	            }
-	            buttons.appendTo(this.elements.footer);
+	            this.elements.buttons.appendTo(this.elements.footer);
 	          }
 	        }
 	      }
 	      return this.elements.footer;
+	    };
+	
+	    Dialog.prototype.refreshStyles = function() {
+	      var styles;
+	      if (this.elements.header.html() === '') {
+	        this.elements.header.removeAttr('styles');
+	      } else if (this.options.styles) {
+	        this.elements.header.css({
+	          borderBottom: '1px solid black',
+	          paddingBottom: '8px'
+	        });
+	      }
+	      styles = {
+	        maxHeight: this.options.maxHeight,
+	        overflow: 'hidden',
+	        overflowX: 'auto',
+	        overflowY: 'auto'
+	      };
+	      if (this.elements.content.html() === '') {
+	        this.elements.content.removeAttr('styles');
+	      } else if (this.options.styles) {
+	        styles.borderBottom = '1px solid black';
+	        styles.paddingTop = '8px';
+	        styles.paddingBottom = '8px';
+	      }
+	      this.elements.content.css(styles);
+	      if (this.elements.footer.html() === '') {
+	        return this.elements.footer.removeAttr('styles');
+	      } else if (this.options.styles) {
+	        this.elements.footer.css({
+	          paddingTop: '8px'
+	        });
+	        if (!this.footer && this.buttons.length > 0) {
+	          return this.elements.buttons.css({
+	            float: 'right'
+	          });
+	        }
+	      }
 	    };
 	
 	    Dialog.prototype.createDialogElement = function() {
@@ -3700,7 +3719,8 @@
 	      this.el.css(styles);
 	      this.el.append(this.renderHeader());
 	      this.el.append(this.renderContent());
-	      return this.el.append(this.renderFooter());
+	      this.el.append(this.renderFooter());
+	      return this.refreshStyles();
 	    };
 	
 	    Dialog.prototype.moveToCenter = function() {
