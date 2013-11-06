@@ -129,6 +129,7 @@ $ npm test
 * 1.6.0
 	+ Optimizations
 	+ Added changeTitle, changeContent and changeInfo methods
+	+ Optimized tests
 
 * 1.5.0
 	+ onTrue and onFalse in confirmations replaced with eventEmitter events

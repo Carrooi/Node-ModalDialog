@@ -36,16 +36,12 @@ describe 'ConfirmDialog', ->
 
 		it 'should call this method when ok button is clicked', (done) ->
 			dialog.on 'true', -> done()
-			dialog.show().then( ->
-				button = $(dialog.el).find('div.buttons a:nth-child(1)')
-				button.click()
-			).done()
+			dialog.render()
+			dialog.elements.footer.find('div.buttons a:nth-child(1)').click()
 
 	describe '#on false', ->
 
 		it 'should call this method when cancel button is clicked', (done) ->
 			dialog.on 'false', -> done()
-			dialog.show().then( ->
-				button = $(dialog.el).find('div.buttons a:nth-child(2)')
-				button.click()
-			).done()
+			dialog.render()
+			dialog.elements.footer.find('div.buttons a:nth-child(2)').click()

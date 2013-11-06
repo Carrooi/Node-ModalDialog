@@ -3166,11 +3166,8 @@
 	        dialog.on('true', function() {
 	          return done();
 	        });
-	        return dialog.show().then(function() {
-	          var button;
-	          button = $(dialog.el).find('div.buttons a:nth-child(1)');
-	          return button.click();
-	        }).done();
+	        dialog.render();
+	        return dialog.elements.footer.find('div.buttons a:nth-child(1)').click();
 	      });
 	    });
 	    return describe('#on false', function() {
@@ -3178,11 +3175,8 @@
 	        dialog.on('false', function() {
 	          return done();
 	        });
-	        return dialog.show().then(function() {
-	          var button;
-	          button = $(dialog.el).find('div.buttons a:nth-child(2)');
-	          return button.click();
-	        }).done();
+	        dialog.render();
+	        return dialog.elements.footer.find('div.buttons a:nth-child(2)').click();
 	      });
 	    });
 	  });
@@ -3267,74 +3261,46 @@
 	          }).done();
 	        }).done();
 	      });
-	      it('element of new dialog should be empty', function(done) {
-	        return dialog.show().then(function() {
-	          expect(dialog.el.find('div').length).to.be.equal(3);
-	          expect(dialog.el.find('div.header').html()).to.be.equal('');
-	          expect(dialog.el.find('div.content').html()).to.be.equal('');
-	          expect(dialog.el.find('div.footer').html()).to.be.equal('');
-	          return done();
-	        }).done();
+	      it('element of new dialog should be empty', function() {
+	        dialog.render();
+	        expect(dialog.el.find('div').length).to.be.equal(3);
+	        expect(dialog.el.find('div.header').html()).to.be.equal('');
+	        expect(dialog.el.find('div.content').html()).to.be.equal('');
+	        return expect(dialog.el.find('div.footer').html()).to.be.equal('');
 	      });
-	      it('should set title of dialog', function(done) {
+	      it('should set title of dialog', function() {
+	        var title;
 	        dialog.title = 'some title';
-	        return dialog.show().then(function() {
-	          var title;
-	          title = $(dialog.el).find('div.header span.title');
-	          expect(title.length).to.be.equal(1);
-	          expect(title.html()).to.be.equal('some title');
-	          return done();
-	        }).done();
+	        dialog.render();
+	        title = dialog.elements.header.children('span');
+	        expect(title.length).to.be.equal(1);
+	        return expect(title.html()).to.be.equal('some title');
 	      });
-	      it('should set html header', function(done) {
+	      it('should set html header', function() {
 	        dialog.header = $('<span class="my-header">header</span>');
-	        return dialog.show().then(function() {
-	          var header;
-	          header = $(dialog.el).find('div.header');
-	          expect(header.length).to.be.equal(1);
-	          expect(header.html()).to.be.equal('<span class="my-header">header</span>');
-	          return done();
-	        }).done();
+	        dialog.render();
+	        return expect(dialog.elements.header.html()).to.be.equal('<span class="my-header">header</span>');
 	      });
-	      it('should set some content', function(done) {
+	      it('should set some content', function() {
 	        dialog.content = 'my content';
-	        return dialog.show().then(function() {
-	          var content;
-	          content = $(dialog.el).find('div.content');
-	          expect(content.length).to.be.equal(1);
-	          expect(content.html()).to.be.equal('my content');
-	          return done();
-	        }).done();
+	        dialog.render();
+	        return expect(dialog.elements.content.html()).to.be.equal('my content');
 	      });
-	      it('should add some buttons', function(done) {
+	      it('should add some buttons', function() {
 	        dialog.addButton('ok');
-	        return dialog.show().then(function() {
-	          var buttons;
-	          buttons = $(dialog.el).find('div.buttons a');
-	          expect(buttons.length).to.be.equal(1);
-	          expect(buttons.html()).to.be.equal('ok');
-	          return done();
-	        }).done();
+	        dialog.render();
+	        return expect(dialog.elements.footer.find('div.buttons a').html()).to.be.equal('ok');
 	      });
-	      it('should set simple information text', function(done) {
+	      it('should set simple information text', function() {
 	        dialog.info = 'info text';
-	        return dialog.show().then(function() {
-	          var info;
-	          info = $(dialog.el).find('div.footer span.info');
-	          expect(info.length).to.be.equal(1);
-	          expect(info.html()).to.be.equal('info text');
-	          return done();
-	        }).done();
+	        dialog.render();
+	        expect(dialog.elements).to.contain.keys(['info']);
+	        return expect(dialog.elements.info.html()).to.be.equal('info text');
 	      });
-	      return it('should set html footer', function(done) {
+	      return it('should set html footer', function() {
 	        dialog.footer = $('<div class="my-footer">footer</div>');
-	        return dialog.show().then(function() {
-	          var footer;
-	          footer = $(dialog.el).find('div.footer');
-	          expect(footer.length).to.be.equal(1);
-	          expect(footer.html()).to.be.equal('<div class="my-footer">footer</div>');
-	          return done();
-	        }).done();
+	        dialog.render();
+	        return expect(dialog.elements.footer.html()).to.be.equal('<div class="my-footer">footer</div>');
 	      });
 	    });
 	    describe('#addButton()', function() {
@@ -3347,11 +3313,8 @@
 	        dialog.addButton('ok', function() {
 	          return done();
 	        });
-	        return dialog.show().then(function() {
-	          var button;
-	          button = $(dialog.el).find('div.buttons a');
-	          return button.click();
-	        }).done();
+	        dialog.render();
+	        return dialog.elements.footer.find('div.buttons a').click();
 	      });
 	      return it('should call right button action when it is clicked', function(done) {
 	        dialog.addButton('cancel');
@@ -3359,11 +3322,8 @@
 	          return done();
 	        });
 	        dialog.addButton('close');
-	        return dialog.show().then(function() {
-	          var button;
-	          button = $(dialog.el).find('div.buttons a:nth-child(2)');
-	          return button.click();
-	        });
+	        dialog.render();
+	        return dialog.elements.footer.find('div.buttons a:nth-child(2)').click();
 	      });
 	    });
 	    describe('#isOpen()', function() {
