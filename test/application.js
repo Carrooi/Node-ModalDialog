@@ -2647,8 +2647,11 @@
 	      }
 	    };
 	
-	    Dialog.prototype.createDialogElement = function() {
+	    Dialog.prototype.render = function() {
 	      var styles;
+	      if (this.options === null) {
+	        this.options = this.parseOptions();
+	      }
 	      this.el = $('<div>', {
 	        'class': this.options.classes.container,
 	        css: {
@@ -2706,7 +2709,7 @@
 	        this.emit('beforeShow', this);
 	        this.options = this.parseOptions(options);
 	        if (this.el === null) {
-	          this.createDialogElement(this.options);
+	          this.render();
 	        }
 	        deferred = Q.defer();
 	        this.moveToCenter().then(function() {
@@ -2783,6 +2786,7 @@
 	      this.info = info;
 	      if (this.info === null && typeof this.elements.info !== 'undefined') {
 	        this.elements.info.remove();
+	        delete this.elements.info;
 	      }
 	      this.renderFooter();
 	      this.refreshStyles('footer');
@@ -3381,7 +3385,7 @@
 	        }).done();
 	      });
 	    });
-	    return describe('#hide()', function() {
+	    describe('#hide()', function() {
 	      it('should hide created dialog', function(done) {
 	        return dialog.show().then(function() {
 	          return dialog.hide().then(function() {
@@ -3397,6 +3401,46 @@
 	          expect(err.message).to.be.equal('This window is not open.');
 	          return done();
 	        }).done();
+	      });
+	    });
+	    describe('#changeTitle()', function() {
+	      return it('should change title of dialog', function() {
+	        dialog.title = 'first';
+	        dialog.render();
+	        expect(dialog.elements.header.children('span').html()).to.be.equal('first');
+	        dialog.changeTitle('second');
+	        return expect(dialog.elements.header.children('span').html()).to.be.equal('second');
+	      });
+	    });
+	    describe('#changeContent()', function() {
+	      it('should change content of dialog', function() {
+	        dialog.content = 'first';
+	        dialog.render();
+	        expect(dialog.elements.content.html()).to.be.equal('first');
+	        dialog.changeContent('second');
+	        return expect(dialog.elements.content.html()).to.be.equal('second');
+	      });
+	      return it('should clear content of dialog', function() {
+	        dialog.content = 'text';
+	        dialog.render();
+	        dialog.changeContent(null);
+	        return expect(dialog.elements.content.html()).to.be.equal('');
+	      });
+	    });
+	    return describe('#changeInfo()', function() {
+	      it('should change info of dialog', function() {
+	        dialog.info = 'first';
+	        dialog.render();
+	        expect(dialog.elements.info.html()).to.be.equal('first');
+	        dialog.changeInfo('second');
+	        return expect(dialog.elements.info.html()).to.be.equal('second');
+	      });
+	      return it('should remove old info from dialog', function() {
+	        dialog.info = 'first';
+	        dialog.render();
+	        dialog.changeInfo(null);
+	        expect(dialog.elements.footer.html()).to.be.equal('');
+	        return expect(dialog.elements).not.to.contain.keys(['info']);
 	      });
 	    });
 	  });
@@ -3740,8 +3784,11 @@
 	      }
 	    };
 	
-	    Dialog.prototype.createDialogElement = function() {
+	    Dialog.prototype.render = function() {
 	      var styles;
+	      if (this.options === null) {
+	        this.options = this.parseOptions();
+	      }
 	      this.el = $('<div>', {
 	        'class': this.options.classes.container,
 	        css: {
@@ -3799,7 +3846,7 @@
 	        this.emit('beforeShow', this);
 	        this.options = this.parseOptions(options);
 	        if (this.el === null) {
-	          this.createDialogElement(this.options);
+	          this.render();
 	        }
 	        deferred = Q.defer();
 	        this.moveToCenter().then(function() {
@@ -3876,6 +3923,7 @@
 	      this.info = info;
 	      if (this.info === null && typeof this.elements.info !== 'undefined') {
 	        this.elements.info.remove();
+	        delete this.elements.info;
 	      }
 	      this.renderFooter();
 	      this.refreshStyles('footer');

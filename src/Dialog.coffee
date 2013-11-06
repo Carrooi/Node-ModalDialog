@@ -196,7 +196,10 @@ class Dialog extends EventEmitter
 					@elements.buttons.css(float: 'right')
 
 
-	createDialogElement: ->
+	render: ->
+		if @options == null
+			@options = @parseOptions()
+
 		@el = $('<div>',
 			'class': @options.classes.container
 			css:
@@ -251,7 +254,7 @@ class Dialog extends EventEmitter
 			@options = @parseOptions(options)
 
 			if @el == null
-				@createDialogElement(@options)
+				@render()
 
 			deferred = Q.defer()
 
@@ -325,6 +328,7 @@ class Dialog extends EventEmitter
 	changeInfo: (@info) ->
 		if @info == null && typeof @elements.info != 'undefined'
 			@elements.info.remove()
+			delete @elements.info
 
 		@renderFooter()
 		@refreshStyles('footer')

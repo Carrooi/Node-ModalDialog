@@ -177,3 +177,40 @@ describe 'Dialog', ->
 				expect(err.message).to.be.equal('This window is not open.')
 				done()
 			).done()
+
+	describe '#changeTitle()', ->
+		it 'should change title of dialog', ->
+			dialog.title = 'first'
+			dialog.render()
+			expect(dialog.elements.header.children('span').html()).to.be.equal('first')
+			dialog.changeTitle('second')
+			expect(dialog.elements.header.children('span').html()).to.be.equal('second')
+
+	describe '#changeContent()', ->
+		it 'should change content of dialog', ->
+			dialog.content = 'first'
+			dialog.render()
+			expect(dialog.elements.content.html()).to.be.equal('first')
+			dialog.changeContent('second')
+			expect(dialog.elements.content.html()).to.be.equal('second')
+
+		it 'should clear content of dialog', ->
+			dialog.content = 'text'
+			dialog.render()
+			dialog.changeContent(null)
+			expect(dialog.elements.content.html()).to.be.equal('')
+
+	describe '#changeInfo()', ->
+		it 'should change info of dialog', ->
+			dialog.info = 'first'
+			dialog.render()
+			expect(dialog.elements.info.html()).to.be.equal('first')
+			dialog.changeInfo('second')
+			expect(dialog.elements.info.html()).to.be.equal('second')
+
+		it 'should remove old info from dialog', ->
+			dialog.info = 'first'
+			dialog.render()
+			dialog.changeInfo(null)
+			expect(dialog.elements.footer.html()).to.be.equal('')
+			expect(dialog.elements).not.to.contain.keys(['info'])
