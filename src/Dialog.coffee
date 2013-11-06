@@ -77,26 +77,33 @@ class Dialog extends EventEmitter
 		return @
 
 
+	parseOptions: (options = {}) ->
+		if typeof options.width == 'undefined' then options.width = @width
+		if typeof options.maxHeight == 'undefined' then options.maxHeight = @maxHeight
+		if typeof options.duration == 'undefined' then options.duration = @duration
+		if typeof options.zIndex == 'undefined' then options.zIndex = @zIndex
+		if typeof options.styles == 'undefined' then options.styles = Dialog.styles
+		if typeof options.classes == 'undefined' then options.classes = {}
+		if typeof options.overlay == 'undefined' then options.overlay = {}
+		if typeof options.classes.container == 'undefined' then options.classes.container = Dialog.classes.container
+		if typeof options.classes.title == 'undefined' then options.classes.title = Dialog.classes.title
+		if typeof options.classes.header == 'undefined' then options.classes.header = Dialog.classes.header
+		if typeof options.classes.content == 'undefined' then options.classes.content = Dialog.classes.content
+		if typeof options.classes.footer == 'undefined' then options.classes.footer = Dialog.classes.footer
+		if typeof options.classes.info == 'undefined' then options.classes.info = Dialog.classes.info
+		if typeof options.classes.buttons == 'undefined' then options.classes.buttons = Dialog.classes.buttons
+		if typeof options.classes.button == 'undefined' then options.classes.button = Dialog.classes.button
+
+		options.overlay.duration = options.duration
+
+		return options
+
+
 	show: (options = {}) ->
 		if Dialog.visible == null
 			@emit 'beforeShow', @
 
-			if typeof options.width == 'undefined' then options.width = @width
-			if typeof options.maxHeight == 'undefined' then options.maxHeight = @maxHeight
-			if typeof options.duration == 'undefined' then options.duration = @duration
-			if typeof options.zIndex == 'undefined' then options.zIndex = @zIndex
-			if typeof options.styles == 'undefined' then options.styles = Dialog.styles
-			if typeof options.classes == 'undefined' then options.classes = {}
-			if typeof options.overlay == 'undefined' then options.overlay = {}
-			if typeof options.classes.container == 'undefined' then options.classes.container = Dialog.classes.container
-			if typeof options.classes.title == 'undefined' then options.classes.title = Dialog.classes.title
-			if typeof options.classes.header == 'undefined' then options.classes.header = Dialog.classes.header
-			if typeof options.classes.content == 'undefined' then options.classes.content = Dialog.classes.content
-			if typeof options.classes.footer == 'undefined' then options.classes.footer = Dialog.classes.footer
-			if typeof options.classes.info == 'undefined' then options.classes.info = Dialog.classes.info
-			if typeof options.classes.buttons == 'undefined' then options.classes.buttons = Dialog.classes.buttons
-			if typeof options.classes.button == 'undefined' then options.classes.button = Dialog.classes.button
-			options.overlay.duration = options.duration
+			options = @parseOptions(options)
 
 			if @el == null
 				@el = $('<div>',

@@ -33,6 +33,6 @@
 		"chai": "~1.8.1"
 	},
 	"scripts": {
-		"test": "cd ./test; mocha-phantomjs index.html;"
+		"test": "cd ./test; simq build; mocha-phantomjs index.html;"
 	}
 }
