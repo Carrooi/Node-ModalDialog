@@ -2527,10 +2527,132 @@
 	      return options;
 	    };
 	
-	    Dialog.prototype.render = function() {};
+	    Dialog.prototype.createDialogElement = function(options) {
+	      var button, buttons, footer, header, styles, _fn, _i, _len, _ref,
+	        _this = this;
+	      this.el = $('<div>', {
+	        'class': options.classes.container,
+	        css: {
+	          display: 'none',
+	          position: 'fixed',
+	          left: '50%',
+	          top: '50%'
+	        }
+	      }).appendTo($('body'));
+	      styles = {
+	        zIndex: options.zIndex,
+	        width: options.width,
+	        marginLeft: -(options.width / 2),
+	        marginTop: -(options.maxHeight / 2)
+	      };
+	      if (options.styles) {
+	        styles.border = '1px solid black';
+	        styles.backgroundColor = 'white';
+	        styles.padding = '10px 12px 10px 12px';
+	      }
+	      this.el.css(styles);
+	      if (this.header || this.title) {
+	        header = $('<div>', {
+	          'class': options.classes.header
+	        });
+	        if (options.styles) {
+	          header.css({
+	            borderBottom: '1px solid black',
+	            paddingBottom: '8px'
+	          });
+	        }
+	        if (this.header) {
+	          header.html(this.header);
+	        } else {
+	          header.html('<span class="' + options.classes.title + '">' + this.title + '</span>');
+	        }
+	        header.appendTo(this.el);
+	      }
+	      if (this.content) {
+	        styles = {
+	          maxHeight: options.maxHeight,
+	          overflow: 'hidden',
+	          overflowX: 'auto',
+	          overflowY: 'auto'
+	        };
+	        if (options.styles) {
+	          styles.borderBottom = '1px solid black';
+	          styles.paddingTop = '8px';
+	          styles.paddingBottom = '8px';
+	        }
+	        $('<div>', {
+	          'class': options.classes.content,
+	          html: this.content,
+	          css: styles
+	        }).appendTo(this.el);
+	      }
+	      if (this.footer || this.info || this.buttons.length > 0) {
+	        footer = $('<div>', {
+	          'class': options.classes.footer
+	        });
+	        if (options.styles) {
+	          footer.css({
+	            paddingTop: '8px'
+	          });
+	        }
+	        if (this.footer) {
+	          footer.html(this.footer);
+	        } else {
+	          if (this.info) {
+	            $('<span class="' + options.classes.info + '">' + this.info + '</span>').appendTo(footer);
+	          }
+	          if (this.buttons.length > 0) {
+	            buttons = $('<div class="' + options.classes.buttons + '">');
+	            if (options.styles) {
+	              buttons.css({
+	                float: 'right'
+	              });
+	            }
+	            _ref = this.buttons;
+	            _fn = function(button) {
+	              return $('<a>', {
+	                html: button.title,
+	                href: '#',
+	                'class': options.classes.button,
+	                click: function(e) {
+	                  e.preventDefault();
+	                  return button.action.call(_this);
+	                }
+	              }).appendTo(buttons);
+	            };
+	            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	              button = _ref[_i];
+	              _fn(button);
+	            }
+	            buttons.appendTo(footer);
+	          }
+	        }
+	        return footer.appendTo(this.el);
+	      }
+	    };
+	
+	    Dialog.prototype.moveToCenter = function() {
+	      var deferred,
+	        _this = this;
+	      deferred = Q.defer();
+	      this.el.css({
+	        display: 'block',
+	        visibility: 'hidden'
+	      });
+	      ready(this.el).then(function() {
+	        var height;
+	        height = parseInt(_this.el.css('height'));
+	        _this.el.css({
+	          visibility: 'visible',
+	          marginTop: -(height / 2)
+	        });
+	        return deferred.resolve(_this);
+	      });
+	      return deferred.promise;
+	    };
 	
 	    Dialog.prototype.show = function(options) {
-	      var button, buttons, deferred, done, finish, footer, header, styles, _fn, _i, _len, _ref,
+	      var deferred,
 	        _this = this;
 	      if (options == null) {
 	        options = {};
@@ -2539,139 +2661,32 @@
 	        this.emit('beforeShow', this);
 	        options = this.parseOptions(options);
 	        if (this.el === null) {
-	          this.el = $('<div>', {
-	            'class': options.classes.container,
-	            css: {
-	              display: 'none',
-	              position: 'fixed',
-	              left: '50%',
-	              top: '50%'
-	            }
-	          }).appendTo($('body'));
-	          styles = {
-	            zIndex: options.zIndex,
-	            width: options.width,
-	            marginLeft: -(options.width / 2),
-	            marginTop: -(options.maxHeight / 2)
-	          };
-	          if (options.styles) {
-	            styles.border = '1px solid black';
-	            styles.backgroundColor = 'white';
-	            styles.padding = '10px 12px 10px 12px';
-	          }
-	          this.el.css(styles);
-	          if (this.header || this.title) {
-	            header = $('<div>', {
-	              'class': options.classes.header
-	            });
-	            if (options.styles) {
-	              header.css({
-	                borderBottom: '1px solid black',
-	                paddingBottom: '8px'
-	              });
-	            }
-	            if (this.header) {
-	              header.html(this.header);
-	            } else {
-	              header.html('<span class="' + options.classes.title + '">' + this.title + '</span>');
-	            }
-	            header.appendTo(this.el);
-	          }
-	          if (this.content) {
-	            styles = {
-	              maxHeight: options.maxHeight,
-	              overflow: 'hidden',
-	              overflowX: 'auto',
-	              overflowY: 'auto'
-	            };
-	            if (options.styles) {
-	              styles.borderBottom = '1px solid black';
-	              styles.paddingTop = '8px';
-	              styles.paddingBottom = '8px';
-	            }
-	            $('<div>', {
-	              'class': options.classes.content,
-	              html: this.content,
-	              css: styles
-	            }).appendTo(this.el);
-	          }
-	          if (this.footer || this.info || this.buttons.length > 0) {
-	            footer = $('<div>', {
-	              'class': options.classes.footer
-	            });
-	            if (options.styles) {
-	              footer.css({
-	                paddingTop: '8px'
-	              });
-	            }
-	            if (this.footer) {
-	              footer.html(this.footer);
-	            } else {
-	              if (this.info) {
-	                $('<span class="' + options.classes.info + '">' + this.info + '</span>').appendTo(footer);
-	              }
-	              if (this.buttons.length > 0) {
-	                buttons = $('<div class="' + options.classes.buttons + '">');
-	                if (options.styles) {
-	                  buttons.css({
-	                    float: 'right'
-	                  });
-	                }
-	                _ref = this.buttons;
-	                _fn = function(button) {
-	                  return $('<a>', {
-	                    html: button.title,
-	                    href: '#',
-	                    'class': options.classes.button,
-	                    click: function(e) {
-	                      e.preventDefault();
-	                      return button.action.call(_this);
-	                    }
-	                  }).appendTo(buttons);
-	                };
-	                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-	                  button = _ref[_i];
-	                  _fn(button);
-	                }
-	                buttons.appendTo(footer);
-	              }
-	            }
-	            footer.appendTo(this.el);
-	          }
+	          this.createDialogElement(options);
 	        }
-	        this.el.css({
-	          display: 'block',
-	          visibility: 'hidden'
-	        });
-	        ready(this.el).then(function() {
-	          var height;
-	          height = parseInt(_this.el.css('height'));
-	          return _this.el.css({
-	            visibility: 'visible',
-	            marginTop: -(height / 2)
-	          });
-	        });
-	        finish = function(deferred) {
-	          _this.emit('afterShow', _this);
-	          return deferred.resolve(_this);
-	        };
 	        deferred = Q.defer();
-	        done = {
-	          overlay: false,
-	          dialog: false
-	        };
-	        Overlay.show(options.overlay).then(function() {
-	          done.overlay = true;
-	          if (done.dialog) {
-	            return finish(deferred);
-	          }
-	        });
-	        this.el.fadeIn(options.duration, function(e) {
-	          Dialog.visible = _this;
-	          done.dialog = true;
-	          if (done.overlay) {
-	            return finish(deferred);
-	          }
+	        this.moveToCenter().then(function() {
+	          var done, finish;
+	          finish = function() {
+	            _this.emit('afterShow', _this);
+	            return deferred.resolve(_this);
+	          };
+	          done = {
+	            overlay: false,
+	            dialog: false
+	          };
+	          Overlay.show(options.overlay).then(function() {
+	            done.overlay = true;
+	            if (done.dialog) {
+	              return finish(deferred);
+	            }
+	          });
+	          return _this.el.fadeIn(options.duration, function(e) {
+	            Dialog.visible = _this;
+	            done.dialog = true;
+	            if (done.overlay) {
+	              return finish(deferred);
+	            }
+	          });
 	        });
 	        return deferred.promise;
 	      } else if (Dialog.visible === this) {
@@ -3329,7 +3344,7 @@
 	return {
 		"name": "modal-dialog",
 		"description": "Window modal dialogs for browser",
-		"version": "1.5.0",
+		"version": "1.6.0",
 		"author": {
 			"name": "David Kudera",
 			"email": "sakren@gmail.com"
@@ -3529,10 +3544,132 @@
 	      return options;
 	    };
 	
-	    Dialog.prototype.render = function() {};
+	    Dialog.prototype.createDialogElement = function(options) {
+	      var button, buttons, footer, header, styles, _fn, _i, _len, _ref,
+	        _this = this;
+	      this.el = $('<div>', {
+	        'class': options.classes.container,
+	        css: {
+	          display: 'none',
+	          position: 'fixed',
+	          left: '50%',
+	          top: '50%'
+	        }
+	      }).appendTo($('body'));
+	      styles = {
+	        zIndex: options.zIndex,
+	        width: options.width,
+	        marginLeft: -(options.width / 2),
+	        marginTop: -(options.maxHeight / 2)
+	      };
+	      if (options.styles) {
+	        styles.border = '1px solid black';
+	        styles.backgroundColor = 'white';
+	        styles.padding = '10px 12px 10px 12px';
+	      }
+	      this.el.css(styles);
+	      if (this.header || this.title) {
+	        header = $('<div>', {
+	          'class': options.classes.header
+	        });
+	        if (options.styles) {
+	          header.css({
+	            borderBottom: '1px solid black',
+	            paddingBottom: '8px'
+	          });
+	        }
+	        if (this.header) {
+	          header.html(this.header);
+	        } else {
+	          header.html('<span class="' + options.classes.title + '">' + this.title + '</span>');
+	        }
+	        header.appendTo(this.el);
+	      }
+	      if (this.content) {
+	        styles = {
+	          maxHeight: options.maxHeight,
+	          overflow: 'hidden',
+	          overflowX: 'auto',
+	          overflowY: 'auto'
+	        };
+	        if (options.styles) {
+	          styles.borderBottom = '1px solid black';
+	          styles.paddingTop = '8px';
+	          styles.paddingBottom = '8px';
+	        }
+	        $('<div>', {
+	          'class': options.classes.content,
+	          html: this.content,
+	          css: styles
+	        }).appendTo(this.el);
+	      }
+	      if (this.footer || this.info || this.buttons.length > 0) {
+	        footer = $('<div>', {
+	          'class': options.classes.footer
+	        });
+	        if (options.styles) {
+	          footer.css({
+	            paddingTop: '8px'
+	          });
+	        }
+	        if (this.footer) {
+	          footer.html(this.footer);
+	        } else {
+	          if (this.info) {
+	            $('<span class="' + options.classes.info + '">' + this.info + '</span>').appendTo(footer);
+	          }
+	          if (this.buttons.length > 0) {
+	            buttons = $('<div class="' + options.classes.buttons + '">');
+	            if (options.styles) {
+	              buttons.css({
+	                float: 'right'
+	              });
+	            }
+	            _ref = this.buttons;
+	            _fn = function(button) {
+	              return $('<a>', {
+	                html: button.title,
+	                href: '#',
+	                'class': options.classes.button,
+	                click: function(e) {
+	                  e.preventDefault();
+	                  return button.action.call(_this);
+	                }
+	              }).appendTo(buttons);
+	            };
+	            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+	              button = _ref[_i];
+	              _fn(button);
+	            }
+	            buttons.appendTo(footer);
+	          }
+	        }
+	        return footer.appendTo(this.el);
+	      }
+	    };
+	
+	    Dialog.prototype.moveToCenter = function() {
+	      var deferred,
+	        _this = this;
+	      deferred = Q.defer();
+	      this.el.css({
+	        display: 'block',
+	        visibility: 'hidden'
+	      });
+	      ready(this.el).then(function() {
+	        var height;
+	        height = parseInt(_this.el.css('height'));
+	        _this.el.css({
+	          visibility: 'visible',
+	          marginTop: -(height / 2)
+	        });
+	        return deferred.resolve(_this);
+	      });
+	      return deferred.promise;
+	    };
 	
 	    Dialog.prototype.show = function(options) {
-	      var button, buttons, deferred, done, finish, footer, header, styles, _fn, _i, _len, _ref,
+	      var deferred,
 	        _this = this;
 	      if (options == null) {
 	        options = {};
@@ -3541,139 +3678,32 @@
 	        this.emit('beforeShow', this);
 	        options = this.parseOptions(options);
 	        if (this.el === null) {
-	          this.el = $('<div>', {
-	            'class': options.classes.container,
-	            css: {
-	              display: 'none',
-	              position: 'fixed',
-	              left: '50%',
-	              top: '50%'
-	            }
-	          }).appendTo($('body'));
-	          styles = {
-	            zIndex: options.zIndex,
-	            width: options.width,
-	            marginLeft: -(options.width / 2),
-	            marginTop: -(options.maxHeight / 2)
-	          };
-	          if (options.styles) {
-	            styles.border = '1px solid black';
-	            styles.backgroundColor = 'white';
-	            styles.padding = '10px 12px 10px 12px';
-	          }
-	          this.el.css(styles);
-	          if (this.header || this.title) {
-	            header = $('<div>', {
-	              'class': options.classes.header
-	            });
-	            if (options.styles) {
-	              header.css({
-	                borderBottom: '1px solid black',
-	                paddingBottom: '8px'
-	              });
-	            }
-	            if (this.header) {
-	              header.html(this.header);
-	            } else {
-	              header.html('<span class="' + options.classes.title + '">' + this.title + '</span>');
-	            }
-	            header.appendTo(this.el);
-	          }
-	          if (this.content) {
-	            styles = {
-	              maxHeight: options.maxHeight,
-	              overflow: 'hidden',
-	              overflowX: 'auto',
-	              overflowY: 'auto'
-	            };
-	            if (options.styles) {
-	              styles.borderBottom = '1px solid black';
-	              styles.paddingTop = '8px';
-	              styles.paddingBottom = '8px';
-	            }
-	            $('<div>', {
-	              'class': options.classes.content,
-	              html: this.content,
-	              css: styles
-	            }).appendTo(this.el);
-	          }
-	          if (this.footer || this.info || this.buttons.length > 0) {
-	            footer = $('<div>', {
-	              'class': options.classes.footer
-	            });
-	            if (options.styles) {
-	              footer.css({
-	                paddingTop: '8px'
-	              });
-	            }
-	            if (this.footer) {
-	              footer.html(this.footer);
-	            } else {
-	              if (this.info) {
-	                $('<span class="' + options.classes.info + '">' + this.info + '</span>').appendTo(footer);
-	              }
-	              if (this.buttons.length > 0) {
-	                buttons = $('<div class="' + options.classes.buttons + '">');
-	                if (options.styles) {
-	                  buttons.css({
-	                    float: 'right'
-	                  });
-	                }
-	                _ref = this.buttons;
-	                _fn = function(button) {
-	                  return $('<a>', {
-	                    html: button.title,
-	                    href: '#',
-	                    'class': options.classes.button,
-	                    click: function(e) {
-	                      e.preventDefault();
-	                      return button.action.call(_this);
-	                    }
-	                  }).appendTo(buttons);
-	                };
-	                for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-	                  button = _ref[_i];
-	                  _fn(button);
-	                }
-	                buttons.appendTo(footer);
-	              }
-	            }
-	            footer.appendTo(this.el);
-	          }
+	          this.createDialogElement(options);
 	        }
-	        this.el.css({
-	          display: 'block',
-	          visibility: 'hidden'
-	        });
-	        ready(this.el).then(function() {
-	          var height;
-	          height = parseInt(_this.el.css('height'));
-	          return _this.el.css({
-	            visibility: 'visible',
-	            marginTop: -(height / 2)
-	          });
-	        });
-	        finish = function(deferred) {
-	          _this.emit('afterShow', _this);
-	          return deferred.resolve(_this);
-	        };
 	        deferred = Q.defer();
-	        done = {
-	          overlay: false,
-	          dialog: false
-	        };
-	        Overlay.show(options.overlay).then(function() {
-	          done.overlay = true;
-	          if (done.dialog) {
-	            return finish(deferred);
-	          }
-	        });
-	        this.el.fadeIn(options.duration, function(e) {
-	          Dialog.visible = _this;
-	          done.dialog = true;
-	          if (done.overlay) {
-	            return finish(deferred);
-	          }
+	        this.moveToCenter().then(function() {
+	          var done, finish;
+	          finish = function() {
+	            _this.emit('afterShow', _this);
+	            return deferred.resolve(_this);
+	          };
+	          done = {
+	            overlay: false,
+	            dialog: false
+	          };
+	          Overlay.show(options.overlay).then(function() {
+	            done.overlay = true;
+	            if (done.dialog) {
+	              return finish(deferred);
+	            }
+	          });
+	          return _this.el.fadeIn(options.duration, function(e) {
+	            Dialog.visible = _this;
+	            done.dialog = true;
+	            if (done.overlay) {
+	              return finish(deferred);
+	            }
+	          });
 	        });
 	        return deferred.promise;
 	      } else if (Dialog.visible === this) {

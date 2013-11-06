@@ -99,6 +99,115 @@ class Dialog extends EventEmitter
 		return options
 
 
+	createDialogElement: (options) ->
+		@el = $('<div>',
+			'class': options.classes.container
+			css:
+				display: 'none'
+				position: 'fixed'
+				left: '50%'
+				top: '50%'
+		).appendTo($('body'))
+
+		styles =
+			zIndex: options.zIndex
+			width: options.width
+			marginLeft: -(options.width / 2)
+			marginTop: -(options.maxHeight / 2)
+		if options.styles
+			styles.border = '1px solid black'
+			styles.backgroundColor = 'white'
+			styles.padding = '10px 12px 10px 12px'
+		@el.css(styles)
+
+		if @header || @title
+			header = $('<div>',
+				'class': options.classes.header
+			)
+
+			if options.styles
+				header.css(
+					borderBottom: '1px solid black'
+					paddingBottom: '8px'
+				)
+
+			if @header
+				header.html(@header)
+			else
+				header.html('<span class="' + options.classes.title + '">' + @title + '</span>')
+
+			header.appendTo(@el)
+
+		if @content
+			styles =
+				maxHeight: options.maxHeight
+				overflow: 'hidden'
+				overflowX: 'auto'
+				overflowY: 'auto'
+			if options.styles
+				styles.borderBottom = '1px solid black'
+				styles.paddingTop = '8px'
+				styles.paddingBottom = '8px'
+			$('<div>',
+				'class': options.classes.content,
+				html: @content
+				css: styles
+			).appendTo(@el)
+
+		if @footer || @info || @buttons.length > 0
+			footer = $('<div>',
+				'class': options.classes.footer,
+			)
+
+			if options.styles
+				footer.css(paddingTop: '8px')
+
+			if @footer
+				footer.html(@footer)
+			else
+				if @info then $('<span class="' + options.classes.info + '">' + @info + '</span>').appendTo(footer)
+				if @buttons.length > 0
+					buttons = $('<div class="' + options.classes.buttons + '">')
+
+					if options.styles
+						buttons.css(float: 'right')
+
+					for button in @buttons
+						( (button) =>
+							$('<a>',
+								html: button.title
+								href: '#'
+								'class': options.classes.button
+								click: (e) =>
+									e.preventDefault()
+									button.action.call(@)
+							).appendTo(buttons)
+						)(button)
+					buttons.appendTo(footer)
+
+			footer.appendTo(@el)
+
+
+	moveToCenter: ->
+		deferred = Q.defer()
+
+		@el.css(
+			display: 'block'
+			visibility: 'hidden'
+		)
+		ready(@el).then( =>
+			height = parseInt(@el.css('height'))
+			@el.css(
+				visibility: 'visible'
+				marginTop: -(height / 2)
+			)
+
+			deferred.resolve(@)
+		)
+
+		return deferred.promise
+
+
 	show: (options = {}) ->
 		if Dialog.visible == null
 			@emit 'beforeShow', @
@@ -106,122 +215,28 @@ class Dialog extends EventEmitter
 			options = @parseOptions(options)
 
 			if @el == null
-				@el = $('<div>',
-					'class': options.classes.container
-					css:
-						display: 'none'
-						position: 'fixed'
-						left: '50%'
-						top: '50%'
-				).appendTo($('body'))
-
-				styles =
-					zIndex: options.zIndex
-					width: options.width
-					marginLeft: -(options.width / 2)
-					marginTop: -(options.maxHeight / 2)
-				if options.styles
-					styles.border = '1px solid black'
-					styles.backgroundColor = 'white'
-					styles.padding = '10px 12px 10px 12px'
-				@el.css(styles)
-
-				if @header || @title
-					header = $('<div>',
-						'class': options.classes.header
-					)
-
-					if options.styles
-						header.css(
-							borderBottom: '1px solid black'
-							paddingBottom: '8px'
-						)
-
-					if @header
-						header.html(@header)
-					else
-						header.html('<span class="' + options.classes.title + '">' + @title + '</span>')
-
-					header.appendTo(@el)
-
-				if @content
-					styles =
-						maxHeight: options.maxHeight
-						overflow: 'hidden'
-						overflowX: 'auto'
-						overflowY: 'auto'
-					if options.styles
-						styles.borderBottom = '1px solid black'
-						styles.paddingTop = '8px'
-						styles.paddingBottom = '8px'
-					$('<div>',
-						'class': options.classes.content,
-						html: @content
-						css: styles
-					).appendTo(@el)
-
-				if @footer || @info || @buttons.length > 0
-					footer = $('<div>',
-						'class': options.classes.footer,
-					)
-
-					if options.styles
-						footer.css(paddingTop: '8px')
-
-					if @footer
-						footer.html(@footer)
-					else
-						if @info then $('<span class="' + options.classes.info + '">' + @info + '</span>').appendTo(footer)
-						if @buttons.length > 0
-							buttons = $('<div class="' + options.classes.buttons + '">')
-
-							if options.styles
-								buttons.css(float: 'right')
-
-							for button in @buttons
-								( (button) =>
-									$('<a>',
-										html: button.title
-										href: '#'
-										'class': options.classes.button
-										click: (e) =>
-											e.preventDefault()
-											button.action.call(@)
-									).appendTo(buttons)
-								)(button)
-							buttons.appendTo(footer)
-
-					footer.appendTo(@el)
-
-			@el.css(
-				display: 'block'
-				visibility: 'hidden'
-			)
-			ready(@el).then( =>
-				height = parseInt(@el.css('height'))
-				@el.css(
-					visibility: 'visible'
-					marginTop: -(height / 2)
-				)
-			)
-
-			finish = (deferred) =>
-				@emit 'afterShow', @
-				deferred.resolve(@)
+				@createDialogElement(options)
 
 			deferred = Q.defer()
-			done =
-				overlay: false
-				dialog: false
 
-			Overlay.show(options.overlay).then( =>
-				done.overlay = true
-				if done.dialog then finish(deferred)
-			)
-			@el.fadeIn(options.duration, (e) =>
-				Dialog.visible = @
-				done.dialog = true
-				if done.overlay then finish(deferred)
+			@moveToCenter().then( =>
+				finish = =>
+					@emit 'afterShow', @
+					deferred.resolve(@)
+
+				done =
+					overlay: false
+					dialog: false
+
+				Overlay.show(options.overlay).then( =>
+					done.overlay = true
+					if done.dialog then finish(deferred)
+				)
+				@el.fadeIn(options.duration, (e) =>
+					Dialog.visible = @
+					done.dialog = true
+					if done.overlay then finish(deferred)
+				)
 			)
 
 			return deferred.promise
