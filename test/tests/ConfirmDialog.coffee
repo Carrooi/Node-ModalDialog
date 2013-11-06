@@ -28,10 +28,12 @@ describe 'ConfirmDialog', ->
 	)
 
 	describe '#constructor()', ->
+
 		it 'should create base two buttons', ->
 			expect(dialog.buttons.length).to.be.equal(2)
 
 	describe '#on true', ->
+
 		it 'should call this method when ok button is clicked', (done) ->
 			dialog.on 'true', -> done()
 			dialog.show().then( ->
@@ -40,6 +42,7 @@ describe 'ConfirmDialog', ->
 			).done()
 
 	describe '#on false', ->
+
 		it 'should call this method when cancel button is clicked', (done) ->
 			dialog.on 'false', -> done()
 			dialog.show().then( ->

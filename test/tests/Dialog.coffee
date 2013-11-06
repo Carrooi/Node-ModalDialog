@@ -29,6 +29,7 @@ describe 'Dialog', ->
 	)
 
 	describe '#show()', ->
+
 		it 'should show and create dialog element', (done) ->
 			dialog.show().then( ->
 				expect(dialog.el).not.to.be.null
@@ -122,6 +123,7 @@ describe 'Dialog', ->
 			).done()
 
 	describe '#addButton()', ->
+
 		it 'should add three buttons', ->
 			dialog.addButton 'ok'
 			dialog.addButton 'cancel'
@@ -144,6 +146,7 @@ describe 'Dialog', ->
 			)
 
 	describe '#isOpen()', ->
+
 		it 'should return false when dialog is closed', ->
 			expect(dialog.isOpen()).to.be.false
 
@@ -162,6 +165,7 @@ describe 'Dialog', ->
 			).done()
 
 	describe '#hide()', ->
+
 		it 'should hide created dialog', (done) ->
 			dialog.show().then( ->
 				dialog.hide().then( ->
@@ -179,6 +183,7 @@ describe 'Dialog', ->
 			).done()
 
 	describe '#changeTitle()', ->
+
 		it 'should change title of dialog', ->
 			dialog.title = 'first'
 			dialog.render()
@@ -187,6 +192,7 @@ describe 'Dialog', ->
 			expect(dialog.elements.header.children('span').html()).to.be.equal('second')
 
 	describe '#changeContent()', ->
+
 		it 'should change content of dialog', ->
 			dialog.content = 'first'
 			dialog.render()
@@ -201,6 +207,7 @@ describe 'Dialog', ->
 			expect(dialog.elements.content.html()).to.be.equal('')
 
 	describe '#changeInfo()', ->
+
 		it 'should change info of dialog', ->
 			dialog.info = 'first'
 			dialog.render()
