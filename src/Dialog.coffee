@@ -163,34 +163,37 @@ class Dialog extends EventEmitter
 		return @elements.footer
 
 
-	refreshStyles: ->
-		if @elements.header.html() == ''
-			@elements.header.removeAttr('styles')
-		else if @options.styles
-			@elements.header.css(
-				borderBottom: '1px solid black'
-				paddingBottom: '8px'
-			)
+	refreshStyles: (type = null) ->
+		if type == null || type == 'header'
+			if @elements.header.html() == ''
+				@elements.header.removeAttr('styles')
+			else if @options.styles
+				@elements.header.css(
+					borderBottom: '1px solid black'
+					paddingBottom: '8px'
+				)
 
-		styles =
-			maxHeight: @options.maxHeight
-			overflow: 'hidden'
-			overflowX: 'auto'
-			overflowY: 'auto'
-		if @elements.content.html() == ''
-			@elements.content.removeAttr('styles')
-		else if @options.styles
-			styles.borderBottom = '1px solid black'
-			styles.paddingTop = '8px'
-			styles.paddingBottom = '8px'
-		@elements.content.css(styles)
+		if type == null || type == 'content'
+			styles =
+				maxHeight: @options.maxHeight
+				overflow: 'hidden'
+				overflowX: 'auto'
+				overflowY: 'auto'
+			if @elements.content.html() == ''
+				@elements.content.removeAttr('styles')
+			else if @options.styles
+				styles.borderBottom = '1px solid black'
+				styles.paddingTop = '8px'
+				styles.paddingBottom = '8px'
+			@elements.content.css(styles)
 
-		if @elements.footer.html() == ''
-			@elements.footer.removeAttr('styles')
-		else if @options.styles
-			@elements.footer.css(paddingTop: '8px')
-			if !@footer && @buttons.length > 0
-				@elements.buttons.css(float: 'right')
+		if type == null || type == 'footer'
+			if @elements.footer.html() == ''
+				@elements.footer.removeAttr('styles')
+			else if @options.styles
+				@elements.footer.css(paddingTop: '8px')
+				if !@footer && @buttons.length > 0
+					@elements.buttons.css(float: 'right')
 
 
 	createDialogElement: ->
@@ -298,6 +301,35 @@ class Dialog extends EventEmitter
 			)
 
 		return deferred.promise
+
+
+	changeTitle: (@title) ->
+		@header = null
+
+		@renderHeader()
+		@refreshStyles('header')
+
+		return @
+
+
+	changeContent: (@content) ->
+		if @content == null
+			@elements.content.html('')
+
+		@renderContent()
+		@refreshStyles('content')
+
+		return @
+
+
+	changeInfo: (@info) ->
+		if @info == null && typeof @elements.info != 'undefined'
+			@elements.info.remove()
+
+		@renderFooter()
+		@refreshStyles('footer')
+
+		return @
 
 
 	isOpen: ->
