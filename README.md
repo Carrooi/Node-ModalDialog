@@ -33,6 +33,16 @@ d.header = $('<div>my custom header</div>');
 d.footer = $('<div>my custom footer</div>');
 ```
 
+## Changing data of created dialog
+
+There are three methods for changing data. Unfortunately you can not change everything (just title, content and info).
+
+```
+d.changeTitle('new title');
+d.changeContent('new content');
+d.changeInfo('new info');
+```
+
 ## Styling
 
 This modal dialog comes with one simple style which is sincerely horrible, so I recommend to use your own style. You just
