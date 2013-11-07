@@ -136,6 +136,9 @@ $ npm test
 
 ## Changelog
 
+* 1.6.1
+	+ Bug with changing elements
+
 * 1.6.0
 	+ Optimizations
 	+ Added changeTitle, changeContent and changeInfo methods

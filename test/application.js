@@ -2538,6 +2538,7 @@
 	          'class': this.options.classes.header
 	        });
 	      }
+	      this.elements.header.html('');
 	      if (this.header || this.title) {
 	        if (this.header) {
 	          this.elements.header.html(this.header);
@@ -2554,6 +2555,7 @@
 	          'class': this.options.classes.content
 	        });
 	      }
+	      this.elements.content.html('');
 	      if (this.content !== null) {
 	        this.elements.content.html(this.content);
 	      }
@@ -2567,6 +2569,13 @@
 	        this.elements.footer = $('<div>', {
 	          'class': this.options.classes.footer
 	        });
+	      }
+	      this.elements.footer.html('');
+	      if (typeof this.elements.info !== 'undefined') {
+	        delete this.elements.info;
+	      }
+	      if (typeof this.elements.buttons !== 'undefined') {
+	        delete this.elements.buttons;
 	      }
 	      if (this.footer || this.info || this.buttons.length > 0) {
 	        if (this.footer) {
@@ -3424,7 +3433,7 @@
 	return {
 		"name": "modal-dialog",
 		"description": "Window modal dialogs for browser",
-		"version": "1.6.0",
+		"version": "1.6.1",
 		"author": {
 			"name": "David Kudera",
 			"email": "sakren@gmail.com"
@@ -3635,6 +3644,7 @@
 	          'class': this.options.classes.header
 	        });
 	      }
+	      this.elements.header.html('');
 	      if (this.header || this.title) {
 	        if (this.header) {
 	          this.elements.header.html(this.header);
@@ -3651,6 +3661,7 @@
 	          'class': this.options.classes.content
 	        });
 	      }
+	      this.elements.content.html('');
 	      if (this.content !== null) {
 	        this.elements.content.html(this.content);
 	      }
@@ -3664,6 +3675,13 @@
 	        this.elements.footer = $('<div>', {
 	          'class': this.options.classes.footer
 	        });
+	      }
+	      this.elements.footer.html('');
+	      if (typeof this.elements.info !== 'undefined') {
+	        delete this.elements.info;
+	      }
+	      if (typeof this.elements.buttons !== 'undefined') {
+	        delete this.elements.buttons;
 	      }
 	      if (this.footer || this.info || this.buttons.length > 0) {
 	        if (this.footer) {

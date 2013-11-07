@@ -110,6 +110,8 @@ class Dialog extends EventEmitter
 				'class': @options.classes.header
 			)
 
+		@elements.header.html('')
+
 		if @header || @title
 			if @header
 				@elements.header.html(@header)
@@ -125,6 +127,8 @@ class Dialog extends EventEmitter
 				'class': @options.classes.content
 			)
 
+		@elements.content.html('')
+
 		if @content != null
 			@elements.content.html(@content)
 
@@ -136,6 +140,11 @@ class Dialog extends EventEmitter
 			@elements.footer = $('<div>',
 				'class': @options.classes.footer,
 			)
+
+		@elements.footer.html('')
+
+		delete @elements.info if typeof @elements.info != 'undefined'
+		delete @elements.buttons if typeof @elements.buttons != 'undefined'
 
 		if @footer || @info || @buttons.length > 0
 			if @footer
