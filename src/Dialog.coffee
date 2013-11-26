@@ -202,7 +202,7 @@ class Dialog extends EventEmitter
 			else if @options.styles
 				@elements.footer.css(paddingTop: '8px')
 				if !@footer && @buttons.length > 0
-					@elements.buttons.css(float: 'right')
+					@elements.buttons.css('float': 'right')
 
 
 	render: ->

@@ -136,6 +136,9 @@ $ npm test
 
 ## Changelog
 
+* 1.6.2
+	+ Little optimization
+
 * 1.6.1
 	+ Bug with changing elements
 

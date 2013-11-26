@@ -28,7 +28,7 @@
           parent: null,
           children: null
         };
-        modules[fullName].apply(modules[fullName], [m.exports, m]);
+        modules[fullName].apply(window, [m.exports, m]);
         m.loaded = true;
         cache[fullName] = m;
       }
@@ -2649,7 +2649,7 @@
 	          });
 	          if (!this.footer && this.buttons.length > 0) {
 	            return this.elements.buttons.css({
-	              float: 'right'
+	              'float': 'right'
 	            });
 	          }
 	        }
@@ -3755,7 +3755,7 @@
 	          });
 	          if (!this.footer && this.buttons.length > 0) {
 	            return this.elements.buttons.css({
-	              float: 'right'
+	              'float': 'right'
 	            });
 	          }
 	        }
@@ -4150,8 +4150,8 @@
 , 'content-ready': function(exports, module) { module.exports = window.require('content-ready/lib/Ready.js'); }
 
 });
-require.version = '5.1.1';
-delete require.__setStats;
+require.__setStats({"q/q.js":{"atime":1385458624000,"mtime":1378314231000,"ctime":1383727273000},"overlay/lib/Overlay.js":{"atime":1385458624000,"mtime":1379361057000,"ctime":1383727273000},"content-ready/lib/Ready.js":{"atime":1385458624000,"mtime":1379354855000,"ctime":1383727273000},"/src/ConfirmDialog.coffee":{"atime":1385458625000,"mtime":1383727263000,"ctime":1383727263000},"/src/Dialog.coffee":{"atime":1385458708000,"mtime":1385458701000,"ctime":1385458701000},"events":{"atime":1385458624000,"mtime":1384294487000,"ctime":1384764305000},"/test/tests/ConfirmDialog.coffee":{"atime":1385458625000,"mtime":1383733644000,"ctime":1383733644000},"/test/tests/Dialog.coffee":{"atime":1385458625000,"mtime":1383733254000,"ctime":1383733254000},"/package.json":{"atime":1385458624000,"mtime":1385458603000,"ctime":1385458603000},"/lib/Dialog.js":{"atime":1385458712000,"mtime":1385458708000,"ctime":1385458708000},"q/package.json":{"atime":1385458624000,"mtime":1383727273000,"ctime":1383727273000},"overlay/package.json":{"atime":1385458624000,"mtime":1383727273000,"ctime":1383727273000},"content-ready/package.json":{"atime":1385458624000,"mtime":1383727273000,"ctime":1383727273000}});
+require.version = '5.1.3';
 
 /** run section **/
 
