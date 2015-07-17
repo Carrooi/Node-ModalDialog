@@ -1,10 +1,10 @@
 {
 	"name": "modal-dialog",
-	"description": "Window modal dialogs for browser",
-	"version": "1.6.2",
+	"description": "[ABANDONED] Window modal dialogs for browser",
+	"version": "1.6.3",
 	"author": {
 		"name": "David Kudera",
-		"email": "sakren@gmail.com"
+		"email": "kudera.d@gmail.com"
 	},
 	"keywords": [
 		"modal",
@@ -16,7 +16,7 @@
 	],
 	"repository": {
 		"type": "git",
-		"url": "git@github.com:sakren/node-modal-dialog.git"
+		"url": "git@github.com:Carrooi/Node-ModalDialog.git"
 	},
 	"license": "MIT",
 	"engines": {
@@ -36,3 +36,4 @@
 		"test": "cd ./test; mocha-phantomjs index.html;"
 	}
 }
+

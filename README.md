@@ -3,6 +3,12 @@
 Window modal dialogs for browser (eg. with [simq](https://npmjs.org/package/simq)).
 Depends on jQuery, instance of EventEmitter, uses [q](https://npmjs.org/package/q) promise library.
 
+## Abandoned
+
+Unfortunately I don't have any more time to maintain this repository :-(
+
+![sad cat](https://raw.githubusercontent.com/sakren/sakren.github.io/master/images/sad-kitten.jpg)
+
 ## Installation
 
 ```
@@ -136,6 +142,10 @@ $ npm test
 
 ## Changelog
 
+* 1.6.3
+	+ Moved to Carrooi organization
+	+ Abandon package
+
 * 1.6.2
 	+ Little optimization
 
@@ -186,3 +196,4 @@ $ npm test
 
 * 1.0.0
 	+ Initial version
+
